@@ -35,4 +35,4 @@ lerna-debug.log*
 
 package-lock.json
 .vercel
-/*.env
+.env
