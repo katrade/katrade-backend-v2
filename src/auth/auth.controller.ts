@@ -39,7 +39,7 @@ export class AuthController {
     @Post('/signin')
     async login(@Req() req:Request, @Res({passthrough: true}) res:Response){
         let tmp = await this.authService.login(req.user);
-        res.cookie('jwtToken', tmp.accessToken, {httpOnly: true});
+        res.cookie('jwtToken', tmp.accessToken, {httpOnly: true, sameSite: true, secure: true});
         return {value: tmp.verifyEmail};
     }
 
