@@ -35,7 +35,9 @@ export class AuthService {
     async getUser(payload: any){
         const user = await this.userService.findAny({_id: payload.uid});
         const profilePic: Image = await this.userService.findProfilePic(payload.uid);
-        user.profilePic = profilePic.image;
+        if(profilePic){
+            user.profilePic = profilePic.image;
+        }
         return user;
     }
 
