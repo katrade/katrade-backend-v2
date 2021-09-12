@@ -9,11 +9,11 @@ require('dotenv').config();
 export class JwtStrategy extends PassportStrategy(Strategy, "accessToken") {
   constructor(private readonly userService: UserService){
     super({
-      // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
-        let data = request.cookies['jwtToken'];
-        return data;
-      }]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
+      //   let data = request.cookies[process.env.SCK];
+      //   return data;
+      // }]),
       ignoreExpiration: false,
       secretOrKey: process.env.secretKey,
     });

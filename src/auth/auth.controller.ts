@@ -7,6 +7,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserService } from 'src/user/user.service';
 import { User } from '../models/user.model';
 import { VerifyEmailGuard } from './guards/verifyEmail.guard';
+require('dotenv').config();
 
 @Controller('auth')
 export class AuthController {
@@ -14,12 +15,7 @@ export class AuthController {
         private readonly authService: AuthService,
         private readonly userService: UserService
     ){}
-
-    // @Post('/test')
-    // async test(@Request() req){
-    //     let user = await this.authService.validateUser(req.body.Username, req.body.Password);
-    //     return user;
-    // }
+    
     @Post('/signup')
     async craeteUser(@Body() data: User): Promise<any>{
         return this.userService.craete_new_user(data);
@@ -39,8 +35,15 @@ export class AuthController {
     @Post('/signin')
     async login(@Req() req:Request, @Res({passthrough: true}) res:Response){
         let tmp = await this.authService.login(req.user);
-        res.cookie('jwtToken', tmp.accessToken, {httpOnly: true, sameSite: true, secure: true});
-        return {value: tmp.verifyEmail};
+        // res.cookie(process.env.SCK, tmp.accessToken, {httpOnly: true});
+        return {value: tmp.verifyEmail, DaveTheHornyDuck: tmp.accessToken};
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/signout')
+    async signout(@Res({passthrough: true}) res:Response){
+        res.clearCookie(process.env.SCK, {httpOnly: true})
+        return {value: true};
     }
 
     @UseGuards(JwtAuthGuard)
