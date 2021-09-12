@@ -33,10 +33,11 @@ export class AuthController {
 
     @UseGuards(LocalAuthGuard)
     @Post('/signin')
-    async login(@Req() req:Request, @Res({passthrough: true}) res:Response){
+    async login(@Req() req:Request, @Res() res:Response){
         let tmp = await this.authService.login(req.user);
+        res.json({value: tmp.verifyEmail, DaveTheHornyDuck: tmp.accessToken});
         // res.cookie(process.env.SCK, tmp.accessToken, {httpOnly: true});
-        return {value: tmp.verifyEmail, DaveTheHornyDuck: tmp.accessToken};
+        // return {value: tmp.verifyEmail, DaveTheHornyDuck: tmp.accessToken};
     }
 
     @UseGuards(JwtAuthGuard)
@@ -54,7 +55,7 @@ export class AuthController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/resendVerifyEmail')
-    async resendVerifyEmail(@Req() req:Request){
+    async resendVerifyEmail(@Req() req:Request, @Res() res: Response){
         let user: User = await this.authService.getUser(req.user);
         let verifyEmail:number = user.verifyEmail
         if(verifyEmail === 1){

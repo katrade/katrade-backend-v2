@@ -9,6 +9,13 @@ import { Post } from '@nestjs/common';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
+    @Get('/findAll')
+    async findAll(){
+        let user = await this.userService.findAll();
+        // let result = await this.UserService.testfuse(user, username);
+        return user;
+    }
+
     @Get()
     async findUser(@Query("username") username:string){
         let user = await this.userService.findUN(username);
@@ -45,6 +52,12 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     async info(@Req() req:Request, @Body() data: any){
         return await this.userService.changeInfo(req.user, data);
+    }
+
+    @Post('/updateProfilePic')
+    @UseGuards(JwtAuthGuard)
+    async updateProfilePic(@Req() req:Request, @Body() data: any){
+        return await this.userService.updateProfilePic(req.user, data);
     }
 
     @Put('/follower')

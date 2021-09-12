@@ -1,19 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../models/user.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, now } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
+import { Image, ImageDocument } from 'src/models/image.model';
 require('dotenv').config();
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectModel('User') private readonly userModel: Model<User>,
+        @InjectModel('Image') private readonly imageModel: Model<ImageDocument>,
         private readonly mailService: MailService,
         private readonly jwtService: JwtService,
     ){}
+
+    async findAll(){
+        const user: User[] = await this.userModel.find();
+        return user
+    }
 
     async findAny(a:any){
         const user = await this.userModel.findOne(a);
@@ -122,6 +129,18 @@ export class UserService {
         return {value: result ? true : false};
     }
 
+    async updateProfilePic(payload:any, data: any){
+        let newProfilePic: Image = new this.imageModel({
+            userId: payload.uid,
+            type: "profilePic",
+            image: data.profilePic,
+            timeStamp: new Date().getTime()
+        })
+        let newPic: any = await this.imageModel.create(newProfilePic);
+        await this.userModel.updateOne({_id: payload.uid}, {$set: {profilePic: newPic._id}});
+        return {value: true};
+    }
+
     async updateFollow(payload: any, select: string , data: string[]): Promise<any>{
         let result:any = await this.userModel.updateOne({_id: payload.uid}, {$set: select === 'follower' ? {followers: data} : {following: data}});
         return {value: result ? true : false};
@@ -130,6 +149,10 @@ export class UserService {
     async getFavorite(payload: any){
         let user:User = await this.userModel.findOne({_id: payload.uid});
         return { data: user.favourite };
+    }
+
+    async findProfilePic(uid){
+        return await this.imageModel.findOne({userId: uid, type: "profilePic"});
     }
 
     async sendEmail(email: string, name: string){
