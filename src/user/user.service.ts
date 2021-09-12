@@ -130,14 +130,20 @@ export class UserService {
     }
 
     async updateProfilePic(payload:any, data: any){
-        let newProfilePic: Image = new this.imageModel({
-            userId: payload.uid,
-            type: "profilePic",
-            image: data.profilePic,
-            timeStamp: new Date().getTime()
-        })
-        let newPic: any = await this.imageModel.create(newProfilePic);
-        await this.userModel.updateOne({_id: payload.uid}, {$set: {profilePic: newPic._id}});
+        let queryImage:Image = await this.imageModel.findOne({userId: payload.uid, type: "profilePic"});
+        if(queryImage){
+            await this.imageModel.updateOne({userId: payload.uid, type: "profilePic"}, {$set: {image: data.profilePic}});
+        }
+        else{
+            let newProfilePic: Image = new this.imageModel({
+                userId: payload.uid,
+                type: "profilePic",
+                image: data.profilePic,
+                timeStamp: new Date()
+            })
+            let newPic: any = await this.imageModel.create(newProfilePic);
+            await this.userModel.updateOne({_id: payload.uid}, {$set: {profilePic: newPic._id}});
+        }
         return {value: true};
     }
 
