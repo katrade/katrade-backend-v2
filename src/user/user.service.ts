@@ -43,7 +43,6 @@ export class UserService {
             sub: user._id
         }
         let token:string = this.jwtService.sign(payload);
-        console.log(token);
         return await this.mailService.sendVerifyEmail({token: token, email: data.email, name: data.firstname});
     }
 
