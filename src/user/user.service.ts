@@ -131,7 +131,7 @@ export class UserService {
             return {message: "This username is already used"};
         }
         await this.userModel.updateOne({_id: payload.uid}, {$set: {username: newUsername}});
-        return {message: "อะไรดีง่า"}
+        return {value: true}
     }
 
     async sendEmail(email: string, name: string){
