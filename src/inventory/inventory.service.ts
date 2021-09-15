@@ -6,7 +6,8 @@ import { User } from '../models/user.model';
 
 @Injectable()
 export class InventoryService {
-    constructor(@InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
+    constructor(
+        @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
         @InjectModel('User') private readonly userModel: Model<User>
     ){}
 
@@ -18,20 +19,18 @@ export class InventoryService {
         return await this.inventoryModel.find();
     }
     
-    async newInv(payload: any, thing: Inventory){
+    async newInv(payload: any, thing: Inventory): Promise<Inventory>{
         let newThing = new this.inventoryModel({
             owner: payload.uid,
             ...thing
         })
-        let tmp: string = "";
+        let tmp: Inventory ;
         await this.inventoryModel.create(newThing).then(async (response) => {
+            tmp = response;
             await this.userModel.updateOne({_id: payload.uid}, {$push: {inventories: [response._id]}}).then(() => {
                 console.log(`Already push in ${payload.uid}`)
-                tmp = "Sc";
             })
-        }).catch(() => {
-            tmp = "Fail"
         })
-        return {message: tmp};
+        return tmp;
     }
 }

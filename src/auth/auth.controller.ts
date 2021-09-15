@@ -35,7 +35,7 @@ export class AuthController {
     @Post('/signin')
     async login(@Req() req:Request, @Res() res:Response){
         let tmp = await this.authService.login(req.user);
-        res.json({value: tmp.verifyEmail, DaveTheHornyDuck: tmp.accessToken});
+        res.json({DaveTheHornyDuck: tmp.accessToken, verifyEmail: tmp.verifyEmail, setUsername: tmp.setUsername});
         // res.cookie(process.env.SCK, tmp.accessToken, {httpOnly: true});
         // return {value: tmp.verifyEmail, DaveTheHornyDuck: tmp.accessToken};
     }
@@ -57,8 +57,7 @@ export class AuthController {
     @Get('/resendVerifyEmail')
     async resendVerifyEmail(@Req() req:Request, @Res() res: Response){
         let user: User = await this.authService.getUser(req.user);
-        let verifyEmail:number = user.verifyEmail
-        if(verifyEmail === 1){
+        if(user.verifyEmail === 1){
             return {message : "already verify"}
         }
         return await this.userService.resendVerifyEmailLink(user)

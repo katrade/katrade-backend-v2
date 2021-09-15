@@ -7,7 +7,7 @@ export class MailService {
     constructor(private readonly mailerService: MailerService){}
 
     async sendVerifyEmail(user: {token: string, email:string, name:string}){
-        console.log(`send email  to ${user.name}`);
+        console.log(`send email to ${user.name}`);
         const url:string = `${process.env.client}/verify?token=${user.token}`;
         await this.mailerService.sendMail({
             to: user.email,

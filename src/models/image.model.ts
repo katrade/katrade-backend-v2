@@ -6,13 +6,13 @@ export type ImageDocument = Image & Document;
 @Schema()
 export class Image{
     @Prop()
-    userId: string;
+    parentId: string;
 
     @Prop()
     type: string;
 
     @Prop()
-    image: string;
+    image: Buffer;
 
     @Prop()
     timeStamp: Date;

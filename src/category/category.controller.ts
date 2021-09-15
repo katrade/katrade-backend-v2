@@ -2,7 +2,7 @@ import { Get, Post, Body, Query } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { Category } from 'src/models/category.model';
 import { CategoryService } from './category.service';
-import { res2aray } from '../models/response.model';
+import { subCat } from '../models/inventory.model';
 
 
 @Controller('category')
@@ -18,7 +18,7 @@ export class CategoryController {
     @Get('/search')
     async sayHi(@Query('pattern') pattern:string){
         let all = await this.categoryService.getAll(); 
-        let s:res2aray[] = await this.categoryService.createAllAray(all);
+        let s:subCat[] = await this.categoryService.createAllAray(all);
         return await this.categoryService.searchCat(s, pattern);
     }
 

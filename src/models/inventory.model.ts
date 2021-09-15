@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { res2aray } from './response.model';
 
 export const inventorySchema = new mongoose.Schema({
     owner: String, //เป็นไอดีของเจ้าของสิ่งของนี้
@@ -25,8 +24,15 @@ export const inventorySchema = new mongoose.Schema({
     ]
 });
 
+export interface subCat{
+    parentCategoryEn: string;
+    parentCategoryTh: string;
+    childCategoryEn: string;
+    childCategoryTh: string;
+}
+
 export interface RequireAray {
-    reqCat: res2aray;
+    reqCat: subCat;
     detail: string;
 }
 
@@ -35,7 +41,7 @@ export interface Inventory {
     owner: string;
     name: string;
     detail: string;
-    category: res2aray;
+    category: subCat;
     pictures: string[];
     require: RequireAray[];
 }

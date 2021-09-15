@@ -1,13 +1,18 @@
-import { Put, Get, Body, Controller, Query, UseGuards, Req } from '@nestjs/common';
+import { Put, Get, Body, Controller, Query, UseGuards, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '../models/user.model';
-import { Request } from 'express';
+import { Request, Express } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Post } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageService } from 'src/image/image.service';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+        private readonly imageService: ImageService
+    ) {}
 
     @Get('/findAll')
     async findAll(){
@@ -54,11 +59,11 @@ export class UserController {
         return await this.userService.changeInfo(req.user, data);
     }
 
-    @Post('/updateProfilePic')
-    @UseGuards(JwtAuthGuard)
-    async updateProfilePic(@Req() req:Request, @Body() data: any){
-        return await this.userService.updateProfilePic(req.user, data);
-    }
+    // @Post('/updateProfilePic')
+    // @UseGuards(JwtAuthGuard)
+    // async updateProfilePic(@Req() req:Request, @Body() data: any){
+    //     return await this.userService.updateProfilePic(req.user, data);
+    // }
 
     @Put('/follower')
     @UseGuards(JwtAuthGuard)
@@ -77,5 +82,28 @@ export class UserController {
     async favourite(@Req() req:Request){
         let result = await this.userService.getFavorite(req.user);
         return result;
+    }
+
+    @Put('/setUsername')
+    @UseGuards(JwtAuthGuard)
+    async setUsername(@Req() req:Request, @Query('newUsername') newUsername: string){
+        return await this.userService.setUsername(req.user, newUsername);
+    }
+
+    @Post('/updateProfilePic')
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadFile(@Req() req: Request, @UploadedFile() file: Express.Multer.File){
+        // let b64 = file.buffer.toString('base64');
+        // let b6 = Buffer.from(b64, 'base64');
+        // console.log(b6);
+        return await this.imageService.updateProfilePic(req.user, file.buffer);
+    }
+
+    @Get('/getFile')
+    @UseGuards(JwtAuthGuard)
+    async getFile(@Req() req: Request){
+        let user: any = req.user;
+        return await this.imageService.findProfilePic(user.uid);
     }
 }

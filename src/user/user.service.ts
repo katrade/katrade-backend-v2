@@ -1,21 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../models/user.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, now } from 'mongoose';
+import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
-import { Image, ImageDocument } from 'src/models/image.model';
 require('dotenv').config();
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectModel('User') private readonly userModel: Model<User>,
-        @InjectModel('Image') private readonly imageModel: Model<ImageDocument>,
         private readonly mailService: MailService,
         private readonly jwtService: JwtService,
     ){}
+
+    async findForSignin(query: string): Promise<User>{
+        return await this.userModel.findOne({$or: [{email: query}, {username: query}]})
+    }
 
     async findAll(){
         const user: User[] = await this.userModel.find();
@@ -37,7 +39,7 @@ export class UserService {
         return user as User;
     }
 
-    private async generrateTokenAndSendEmailVerify(user:User, data:User): Promise<string>{
+    private async updateUserAndGenerrateTokenAndSendEmailVerify(user:User, data:User): Promise<string>{
         await this.userModel.updateOne({_id: user._id}, {$set: data});
         let payload: any = {
             sub: user._id
@@ -52,11 +54,11 @@ export class UserService {
         const newUser = new this.userModel({
             firstname: data.firstname,
             lastname: data.lastname,
-            username: data.username,
+            username: "",
             password: data.password,
             address: "",
             email: data.email,
-            phoneNumber: data.phoneNumber,
+            phoneNumber: "",
             profilePic: "",
             verifyEmail: 0,
             favourite:[],
@@ -66,28 +68,13 @@ export class UserService {
         });
         let m: any = "";
         let checkEmail:User = await this.userModel.findOne({email: data.email});
-        let checkUsername:User = await this.userModel.findOne({username: data.username});
         if(checkEmail){
-            if(checkUsername && checkEmail.verifyEmail === 1){
-                m = "This email and username is already used";
-            }
-            else if(checkEmail.verifyEmail === 1){
+            if(checkEmail.verifyEmail === 1){
                 m = "This email is already used";
             }
-            else if(checkUsername && checkEmail.verifyEmail === 0){
-                if(checkUsername.username !== checkEmail.username){
-                    m = "This username is already used";
-                }
-                else{
-                    m = await this.generrateTokenAndSendEmailVerify(checkEmail, data);
-                }
+            else{
+                m = await this.updateUserAndGenerrateTokenAndSendEmailVerify(checkEmail, data);
             }
-            else if(checkEmail.verifyEmail === 0){
-                m = await this.generrateTokenAndSendEmailVerify(checkEmail, data);
-            }
-        }
-        else if(checkUsername){
-            m = "This username is already used";
         }
         else{
             let user = await this.userModel.create(newUser);
@@ -109,7 +96,7 @@ export class UserService {
         }
         let token:string = this.jwtService.sign(payload);
         let m:string = await this.mailService.sendVerifyEmail({token: token, email: user.email, name: user.firstname});
-        return {message: m}
+        return {message: m};
     }
 
     async verifyEmail(payload: any):Promise<any>{
@@ -128,24 +115,6 @@ export class UserService {
         return {value: result ? true : false};
     }
 
-    async updateProfilePic(payload:any, data: any){
-        let queryImage:Image = await this.imageModel.findOne({userId: payload.uid, type: "profilePic"});
-        if(queryImage){
-            await this.imageModel.updateOne({userId: payload.uid, type: "profilePic"}, {$set: {image: data.profilePic, timeStamp: new Date()}});
-        }
-        else{
-            let newProfilePic: Image = new this.imageModel({
-                userId: payload.uid,
-                type: "profilePic",
-                image: data.profilePic,
-                timeStamp: new Date()
-            })
-            let newPic: any = await this.imageModel.create(newProfilePic);
-            await this.userModel.updateOne({_id: payload.uid}, {$set: {profilePic: newPic._id}});
-        }
-        return {value: true};
-    }
-
     async updateFollow(payload: any, select: string , data: string[]): Promise<any>{
         let result:any = await this.userModel.updateOne({_id: payload.uid}, {$set: select === 'follower' ? {followers: data} : {following: data}});
         return {value: result ? true : false};
@@ -156,8 +125,13 @@ export class UserService {
         return { data: user.favourite };
     }
 
-    async findProfilePic(uid){
-        return await this.imageModel.findOne({userId: uid, type: "profilePic"});
+    async setUsername(payload:any ,newUsername: string){
+        let checkUsername: User = await this.userModel.findOne({username: newUsername});
+        if(checkUsername){
+            return {message: "This username is already used"};
+        }
+        await this.userModel.updateOne({_id: payload.uid}, {$set: {username: newUsername}});
+        return {message: "อะไรดีง่า"}
     }
 
     async sendEmail(email: string, name: string){

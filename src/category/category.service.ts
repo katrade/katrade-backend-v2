@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { res2aray } from 'src/models/response.model';
+import { subCat } from '../models/inventory.model';
 import { Category } from '../models/category.model';
 const Fuse = require('fuse.js');
-
-let arayCat: res2aray[] = [];
  
 @Injectable()
 export class CategoryService {
@@ -22,12 +20,12 @@ export class CategoryService {
     }
 
     async createAllAray(all: Category[]){
-        let s:res2aray[] = [];
+        let s:subCat[] = [];
         for(let i:number = 0; i < all.length; i++){
             let parentTh: string = all[i].parentCategoryTh;
             let parentEn: string = all[i].parentCategoryEn;
             for(let j: number = 0; j < all[i].childCategoryEn.length; j++){
-                let tmp: res2aray = {
+                let tmp: subCat = {
                     parentCategoryEn: parentEn,
                     parentCategoryTh: parentTh,
                     childCategoryEn: all[i].childCategoryEn[j],
@@ -45,7 +43,7 @@ export class CategoryService {
         return result;
     }
 
-    async searchCat(list: res2aray[], pattern:string) {
+    async searchCat(list: subCat[], pattern:string) {
         const options = {
             includeScore: true,
             threshold: 0.4,

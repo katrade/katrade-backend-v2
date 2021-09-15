@@ -11,6 +11,7 @@ import { refreshTokenSchema } from '../models/refresh-token.model';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RefreshTokenService } from './refreshToken.service';
 import { VerifyEmailStrategy } from './strategies/verifyEmail.straregy';
+import { ImageModule } from 'src/image/image.module';
 require('dotenv').config();
 
 @Module({
@@ -21,7 +22,8 @@ require('dotenv').config();
     JwtModule.register({
       secret: process.env.secretKey,
       signOptions: { expiresIn: process.env.expries },
-    })
+    }),
+    ImageModule
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, RefreshTokenService, VerifyEmailStrategy],
