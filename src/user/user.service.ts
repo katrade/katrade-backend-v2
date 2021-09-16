@@ -58,7 +58,7 @@ export class UserService {
             password: data.password,
             address: "",
             email: data.email,
-            phoneNumber: "",
+            phoneNumber: data.phoneNumber,
             profilePic: "",
             verifyEmail: 0,
             favourite:[],
