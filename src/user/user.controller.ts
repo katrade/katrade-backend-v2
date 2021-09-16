@@ -102,8 +102,8 @@ export class UserController {
 
     @Get('/getFile')
     @UseGuards(JwtAuthGuard)
-    async getFile(@Req() req: Request){
-        let user: any = req.user;
-        return await this.imageService.findProfilePic(user.uid);
+    async getFile(@Req() req){
+        let uid: string = req.user.uid;
+        return await this.imageService.findProfilePic(uid);
     }
 }

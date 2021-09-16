@@ -27,7 +27,7 @@ export interface User {
 	phoneNumber: string;
 	profilePic: string;
 	verifyEmail: number;
-	favourite: string,
+	favourite: string[],
 	followers: string[];
 	following: string[];
 	inventories: string[];

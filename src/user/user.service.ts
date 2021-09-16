@@ -125,6 +125,14 @@ export class UserService {
         return { data: user.favourite };
     }
 
+    async addFavorite(payload: any, inventoryId: string){
+        await this.userModel.updateOne({_id: payload.uid}, {$push: {favourite: [inventoryId]}});
+    }
+
+    async follow(payload: any, userTargetId:string){
+        
+    }
+
     async setUsername(payload:any ,newUsername: string){
         let checkUsername: User = await this.userModel.findOne({username: newUsername});
         if(checkUsername){
