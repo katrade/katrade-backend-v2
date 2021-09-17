@@ -18,6 +18,10 @@ export class InventoryService {
     async getAll(){
         return await this.inventoryModel.find();
     }
+
+    async getUserInventory(userId: string){
+        return await this.inventoryModel.find({owner: userId});
+    }
     
     async newInv(payload: any, thing: Inventory): Promise<Inventory>{
         let newThing = new this.inventoryModel({
