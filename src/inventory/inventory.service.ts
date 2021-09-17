@@ -18,16 +18,21 @@ export class InventoryService {
     async getAll(){
         return await this.inventoryModel.find();
     }
+
+    async getUserInventory(userId: string){
+        return await this.inventoryModel.find({owner: userId});
+    }
     
     async newInv(payload: any, thing: Inventory): Promise<Inventory>{
         let newThing = new this.inventoryModel({
             owner: payload.uid,
+            timeStamp: new Date(),
             ...thing
         })
         let tmp: Inventory ;
         await this.inventoryModel.create(newThing).then(async (response) => {
             tmp = response;
-            await this.userModel.updateOne({_id: payload.uid}, {$push: {inventories: [response._id]}}).then(() => {
+            await this.userModel.updateOne({_id: payload.uid}, {$push: {inventories: [response._id.toString()]}}).then(() => {
                 console.log(`Already push in ${payload.uid}`)
             })
         })

@@ -90,6 +90,12 @@ export class UserController {
         return await this.userService.setUsername(req.user, newUsername);
     }
 
+    @Put('/follow')
+    @UseGuards(JwtAuthGuard)
+    async follow(@Req() req, @Query('id') id:string){
+        return await this.userService.follow(req.user.uid, id);
+    }
+
     @Post('/updateProfilePic')
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file'))
@@ -102,8 +108,8 @@ export class UserController {
 
     @Get('/getFile')
     @UseGuards(JwtAuthGuard)
-    async getFile(@Req() req: Request){
-        let user: any = req.user;
-        return await this.imageService.findProfilePic(user.uid);
+    async getFile(@Req() req){
+        let uid: string = req.user.uid;
+        return await this.imageService.findProfilePic(uid);
     }
 }

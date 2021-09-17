@@ -58,7 +58,7 @@ export class UserService {
             password: data.password,
             address: "",
             email: data.email,
-            phoneNumber: "",
+            phoneNumber: data.phoneNumber,
             profilePic: "",
             verifyEmail: 0,
             favourite:[],
@@ -125,13 +125,23 @@ export class UserService {
         return { data: user.favourite };
     }
 
+    async addFavorite(payload: any, inventoryId: string){
+        await this.userModel.updateOne({_id: payload.uid}, {$push: {favourite: [inventoryId]}});
+    }
+
+    async follow(uid:string, userTargetId:string){
+        await this.userModel.updateOne({_id: uid}, {$push: {following:[userTargetId]}});
+        await this.userModel.updateOne({_id: userTargetId}, {$push: {followers:[uid]}});
+        return {value: true};
+    }
+
     async setUsername(payload:any ,newUsername: string){
         let checkUsername: User = await this.userModel.findOne({username: newUsername});
         if(checkUsername){
             return {message: "This username is already used"};
         }
         await this.userModel.updateOne({_id: payload.uid}, {$set: {username: newUsername}});
-        return {message: "อะไรดีง่า"}
+        return {value: true}
     }
 
     async sendEmail(email: string, name: string){

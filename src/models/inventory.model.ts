@@ -4,6 +4,7 @@ export const inventorySchema = new mongoose.Schema({
     owner: String, //เป็นไอดีของเจ้าของสิ่งของนี้
     name: String,
     detail: String,
+    timeStamp: Date,
     category: {
         parentCategoryEn: String,
         parentCategoryTh: String,
@@ -41,6 +42,7 @@ export interface Inventory {
     owner: string;
     name: string;
     detail: string;
+    timeStamp: Date,
     category: subCat;
     pictures: string[];
     require: RequireAray[];

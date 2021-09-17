@@ -15,9 +15,16 @@ export class InventoryController {
     ) {}
 
     @UseGuards(JwtAuthGuard)
-    @Get()
-    async findById(@Query('id') inventoryId:string): Promise<any>{
-        return {data: await this.inventoryService.findInventoryById(inventoryId)}
+    @Get('getInventoryById')
+    async findById(@Query('id') inventoryId:string): Promise<Inventory>{
+        return await this.inventoryService.findInventoryById(inventoryId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('getUserInventory')
+    async getUserInventory(@Req() req): Promise<Inventory[]>{
+        let uid:string = req.user.uid;
+        return await this.inventoryService.getUserInventory(uid);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -29,17 +36,22 @@ export class InventoryController {
     @Post()
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('files'))
-    async createnew(@Req() req:Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body('body') body:string) {
-        let filesBuffer: Buffer[] = [];
-        for(let i = 0; i < files.length; i++){
-            filesBuffer.push(files[i].buffer);
-        } 
-        console.log(files);
+    // async createnew(@Req() req:Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body('body') body:string) {
+    async createnew(@Req() req:Request, @Body('body') body:string) {
+        // if(!files[0]){
+        //     return {message: "no pic"}
+        // }
+        // let filesBuffer: Buffer[] = [];
+        // for(let i = 0; i < files.length; i++){
+        //     filesBuffer.push(files[i].buffer);
+        // } 
+        // console.log(files);
         const data = JSON.parse(body);
         const newInv = await this.inventoryService.newInv(req.user, data);
         console.log(newInv);
-        const result = await this.imageService.newInvPic(newInv._id, filesBuffer);
-        return result;
+        // const result = await this.imageService.newInvPic(newInv._id, filesBuffer);
+        return {value: newInv ? true: false};
+        // return result;
     }
 
     // @Post()
