@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Query, Req, UseInterceptors, UploadedFiles, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Query, Req, UseInterceptors, UploadedFiles, Res, Delete } from '@nestjs/common';
 import { Request } from 'express';
 import { InventoryService } from './inventory.service';
 import { Inventory } from '../models/inventory.model';
@@ -25,6 +25,13 @@ export class InventoryController {
     async getUserInventory(@Req() req): Promise<Inventory[]>{
         let uid:string = req.user.uid;
         return await this.inventoryService.getUserInventory(uid);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('deleteInventoryById')
+    async deleteInventoryById(@Req() req, @Query('id') id:string){
+        let uid:string = req.user.uid;
+        return await this.inventoryService.deleteInventoryById(uid, id);
     }
 
     @UseGuards(JwtAuthGuard)

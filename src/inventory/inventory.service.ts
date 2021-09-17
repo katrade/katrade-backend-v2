@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Inventory, RequireAray } from 'src/models/inventory.model';
+import { Inventory } from 'src/models/inventory.model';
 import { User } from '../models/user.model';
 
 @Injectable()
@@ -21,6 +21,16 @@ export class InventoryService {
 
     async getUserInventory(userId: string){
         return await this.inventoryModel.find({owner: userId});
+    }
+
+    async deleteInventoryById(uid: string, id:string){
+        let user:User = await this.userModel.findOne({_id: uid});
+        if(!user.inventories.includes(id)){
+            return {message: "It's not your thing"};
+        }
+        await this.userModel.updateOne({_id: uid}, {$pull: {inventories: id}});
+        await this.inventoryModel.deleteOne({_id: id});
+        return {value: true}
     }
     
     async newInv(payload: any, thing: Inventory): Promise<Inventory>{

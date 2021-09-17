@@ -30,7 +30,7 @@ export class UserService {
     }
 
     async findUN(username:string ){
-        const user = await this.userModel.findOne({Username: username});
+        const user = await this.userModel.findOne({username: username});
         return user as User;
     }
 
