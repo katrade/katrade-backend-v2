@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Inventory } from 'src/models/inventory.model';
 import { User } from '../models/user.model';
+const Fuse = require('fuse.js');
 
 @Injectable()
 export class InventoryService {
@@ -48,4 +49,25 @@ export class InventoryService {
         })
         return tmp;
     }
+
+    async searchInventory(list: Inventory[] , query: string){
+        const options = {
+            includeScore: true,
+            threshold: 0.2,
+            minMatchCharLength: 3,
+            keys: [
+                {
+                    name: 'detail',
+                    weight: 0.1
+                },
+                {
+                    name: 'name',
+                    weight: 0.9
+                }
+            ]
+        }
+        const fuse = new Fuse(list, options);
+        return await fuse.search(query);
+    }
+
 }

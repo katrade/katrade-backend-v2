@@ -36,8 +36,15 @@ export class InventoryController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/getAllThing')
-    ga(){
+    getAll(){
         return this.inventoryService.getAll();
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/search')
+    async search(@Query('query') query:string){
+        const list: Inventory[] = await this.inventoryService.getAll();
+        return await this.inventoryService.searchInventory(list, query);
     }
 
     @Post()
