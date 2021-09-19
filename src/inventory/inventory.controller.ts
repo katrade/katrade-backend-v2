@@ -60,7 +60,6 @@ export class InventoryController {
         for(let i = 0; i < files.length; i++){
             filesBuffer.push(files[i].buffer);
         } 
-        console.log(files);
         const data = JSON.parse(body);
         const newInv = await this.inventoryService.newInv(req.user, data);
         // console.log(newInv);
