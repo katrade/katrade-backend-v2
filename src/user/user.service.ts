@@ -130,6 +130,9 @@ export class UserService {
     }
 
     async follow(uid:string, userTargetId:string){
+        if(uid === userTargetId){
+            return {message : "You can't follow yourself"};
+        }
         await this.userModel.updateOne({_id: uid}, {$push: {following:[userTargetId]}});
         await this.userModel.updateOne({_id: userTargetId}, {$push: {followers:[uid]}});
         return {value: true};

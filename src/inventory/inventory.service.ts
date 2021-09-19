@@ -3,13 +3,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Inventory } from 'src/models/inventory.model';
 import { User } from '../models/user.model';
+import { ImageService } from '../image/image.service';
 const Fuse = require('fuse.js');
 
 @Injectable()
 export class InventoryService {
     constructor(
         @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
-        @InjectModel('User') private readonly userModel: Model<User>
+        @InjectModel('User') private readonly userModel: Model<User>,
+        private readonly imageService: ImageService
     ){}
 
     async findInventoryById(inventoryId: string): Promise<Inventory>{
@@ -31,7 +33,8 @@ export class InventoryService {
         }
         await this.userModel.updateOne({_id: uid}, {$pull: {inventories: id}});
         await this.inventoryModel.deleteOne({_id: id});
-        return {value: true}
+        await this.imageService.deleteImage("inventoryPic", id);
+        return {value: true};
     }
     
     async newInv(payload: any, thing: Inventory): Promise<Inventory>{

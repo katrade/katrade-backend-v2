@@ -49,4 +49,9 @@ export class ImageService {
         return {value: true};
     }
 
+    async deleteImage(type:string, parentId:string){
+        await this.imageModel.deleteMany({parentId: parentId, type:type});
+        return {value: true}; 
+    }
+
 }
