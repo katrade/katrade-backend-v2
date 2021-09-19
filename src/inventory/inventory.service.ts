@@ -14,8 +14,13 @@ export class InventoryService {
         private readonly imageService: ImageService
     ){}
 
-    async findInventoryById(inventoryId: string): Promise<Inventory>{
-        return await this.inventoryModel.findOne({_id: inventoryId})
+    async findInventoryById(inventoryId: string): Promise<Inventory | any>{
+        let i:Inventory = await this.inventoryModel.findOne({_id: inventoryId});
+        if(!i){
+            return {message: "Can't find this inventory"};
+        }
+        i.pictures = await this.imageService.findAndChangeToBase64Array(i.pictures);
+        return i;
     }
 
     async getAll(){
@@ -23,7 +28,15 @@ export class InventoryService {
     }
 
     async getUserInventory(userId: string){
-        return await this.inventoryModel.find({owner: userId});
+        let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
+        let n:number = allUserInventory.length;
+        for(let i = 0; i < n; i++){
+            let nImage:number = allUserInventory[i].pictures.length;
+            for(let j = 0; j < nImage; j++){
+                allUserInventory[i].pictures[j] = await this.imageService.findAndChangeToBase64(allUserInventory[i].pictures[j]);
+            }
+        }
+        return allUserInventory;
     }
 
     async deleteInventoryById(uid: string, id:string){

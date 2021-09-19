@@ -13,6 +13,23 @@ export class ImageService {
         @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
     ){}
 
+    async findAndChangeToBase64Array(sarray:string[]){
+        let n:number = sarray.length
+        for(let i = 0; i < n; i++){
+            let tmp:string = await this.findAndChangeToBase64(sarray[i]);
+            sarray[i] = tmp;
+        }
+        return sarray;
+    }
+
+    async findAndChangeToBase64(id:string){
+        let inventoryImage:Image = await this.imageModel.findOne({_id: id});
+        if(!inventoryImage){
+            return "not found";
+        }
+        return `data:image/jpeg;base64,${inventoryImage.image.toString('base64')}`;
+    }
+
     async newInvPic(invId: string, filesBuffer: Buffer[]){
         const indexBuffer: number = filesBuffer.length;
         for(let i = 0; i < indexBuffer; i++){
