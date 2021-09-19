@@ -44,7 +44,7 @@ export class InventoryController {
     @Get('/search')
     async search(@Query('query') query:string){
         const list: Inventory[] = await this.inventoryService.getAll();
-        return await this.inventoryService.searchInventory(list, query);
+        return await this.imageService.changeInventoryImageArrayToBase64(await this.inventoryService.searchInventory(list, query));
     }
 
     @Post()

@@ -29,14 +29,7 @@ export class InventoryService {
 
     async getUserInventory(userId: string){
         let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
-        let n:number = allUserInventory.length;
-        for(let i = 0; i < n; i++){
-            let nImage:number = allUserInventory[i].pictures.length;
-            for(let j = 0; j < nImage; j++){
-                allUserInventory[i].pictures[j] = await this.imageService.findAndChangeToBase64(allUserInventory[i].pictures[j]);
-            }
-        }
-        return allUserInventory;
+        return await this.imageService.changeInventoryImageArrayToBase64(allUserInventory);
     }
 
     async deleteInventoryById(uid: string, id:string){
