@@ -6,12 +6,14 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Post } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageService } from 'src/image/image.service';
+import { TradeService } from 'src/trade/trade.service';
 
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService,
-        private readonly imageService: ImageService
+        private readonly imageService: ImageService,
+        private readonly tradeService: TradeService
     ) {}
 
     @Get('/findAll')
@@ -104,6 +106,12 @@ export class UserController {
         // let b6 = Buffer.from(b64, 'base64');
         // console.log(b6);
         return await this.imageService.updateProfilePic(req.user, file.buffer);
+    }
+
+    @Post('/createRequest')
+    @UseGuards(JwtAuthGuard)
+    async createRequest(@Req() req, @Body() request: any){
+        await this.tradeService.createRequest(req.user.uid, request);
     }
 
     @Get('/getFile')

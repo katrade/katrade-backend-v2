@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { VerifyEmailStrategy } from 'src/auth/strategies/verifyEmail.straregy';
 import { PassportModule } from '@nestjs/passport';
 import { ImageModule } from 'src/image/image.module';
+import { TradeModule } from 'src/trade/trade.module';
 require('dotenv').config();
 
 @Module({
@@ -18,7 +19,8 @@ require('dotenv').config();
       signOptions: { expiresIn: process.env.expiresEmailKey },
     }),
     PassportModule.register({defaultStrategy: 'verifyEmailToken'}),
-    ImageModule
+    ImageModule,
+    TradeModule
   ],
   controllers: [UserController],
   providers: [UserService, MailService, VerifyEmailStrategy],
