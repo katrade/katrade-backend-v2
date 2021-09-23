@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../models/user.model';
+import { Inventory } from 'src/models/inventory.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
+import { InventoryService } from 'src/inventory/inventory.service';
 require('dotenv').config();
 
 @Injectable()
@@ -13,6 +15,7 @@ export class UserService {
         @InjectModel('User') private readonly userModel: Model<User>,
         private readonly mailService: MailService,
         private readonly jwtService: JwtService,
+        private readonly inventoryService: InventoryService
     ){}
 
     async findForSignin(query: string): Promise<User>{
@@ -120,9 +123,15 @@ export class UserService {
         return {value: result ? true : false};
     }
 
-    async getFavorite(payload: any){
-        let user:User = await this.userModel.findOne({_id: payload.uid});
-        return { data: user.favourite };
+    async getFavorite(payload: any):Promise<{data: Inventory[]}>{
+        const user:User = await this.userModel.findOne({_id: payload.uid});
+        const inventoryArray: Inventory[] = [];
+        console.log(user.favourite.length);
+        for (let i = 0; i < user.favourite.length; i++) {
+            let inventory: Inventory = await this.inventoryService.findInventoryById(user.favourite[i]);
+            inventoryArray.push(inventory);
+        }
+        return { data: inventoryArray };
     }
 
     async addFavorite(payload: any, inventoryId: string){

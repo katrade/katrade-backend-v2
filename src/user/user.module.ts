@@ -9,21 +9,25 @@ import { VerifyEmailStrategy } from 'src/auth/strategies/verifyEmail.straregy';
 import { PassportModule } from '@nestjs/passport';
 import { ImageModule } from 'src/image/image.module';
 import { TradeModule } from 'src/trade/trade.module';
+import { InventoryService } from 'src/inventory/inventory.service';
+import { InventoryModule } from 'src/inventory/inventory.module';
+import {inventorySchema } from 'src/models/inventory.model';
 require('dotenv').config();
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{name: 'User', schema: userSchema}]),
+    MongooseModule.forFeature([{name: 'User', schema: userSchema}, {name: "Inventory", schema: inventorySchema},]),
     JwtModule.register({
       secret: process.env.secrectVerifyEmailKey,
       signOptions: { expiresIn: process.env.expiresEmailKey },
     }),
     PassportModule.register({defaultStrategy: 'verifyEmailToken'}),
     ImageModule,
-    TradeModule
+    TradeModule,
+    InventoryModule
   ],
   controllers: [UserController],
-  providers: [UserService, MailService, VerifyEmailStrategy],
+  providers: [UserService, MailService, VerifyEmailStrategy, InventoryService],
   exports: [UserService]
 })
 export class UserModule {}
