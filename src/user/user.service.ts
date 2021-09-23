@@ -147,6 +147,22 @@ export class UserService {
         return {value: true}
     }
 
+    async pushFavourite(uid:string, inventoryId:string):Promise<{value: boolean} | {message: string}>{
+        if(inventoryId){
+            await this.userModel.updateOne({_id: uid}, {$push: {favourite: [inventoryId.toString()]}});
+            return {value: true};
+        }
+        return {message: "Doesn't has inventoryId"};
+    }
+
+    async pullFavourite(uid:string, inventoryId:string):Promise<{value: boolean} | {message: string}>{
+        if(inventoryId){
+            await this.userModel.updateOne({_id: uid}, {$pull: {favourite: inventoryId.toString()}});
+            return {value: true};
+        }
+        return {message: "Doesn't has inventoryId"};
+    }
+
     async sendEmail(email: string, name: string){
         const token = Math.floor(1000 + Math.random() * 9000).toString();
         // create user in db

@@ -1,4 +1,4 @@
-import { Put, Get, Body, Controller, Query, UseGuards, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Put, Get, Body, Controller, Query, UseGuards, Req, UploadedFile, UseInterceptors, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '../models/user.model';
 import { Request, Express } from 'express';
@@ -81,9 +81,21 @@ export class UserController {
 
     @Get('/favourite')
     @UseGuards(JwtAuthGuard)
-    async favourite(@Req() req:Request){
+    async getFavourite(@Req() req:Request){
         let result = await this.userService.getFavorite(req.user);
         return result;
+    }
+
+    @Patch('/pushFavourite')
+    @UseGuards(JwtAuthGuard)
+    async pushFavourite(@Req() req, @Query('id') inventoryId:string){
+        return this.userService.pushFavourite(req.user.uid, inventoryId);
+    }
+
+    @Patch('/pullFavourite')
+    @UseGuards(JwtAuthGuard)
+    async putFavourite(@Req() req, @Query('id') inventoryId:string){
+        return this.userService.pullFavourite(req.user.uid, inventoryId);
     }
 
     @Put('/setUsername')
