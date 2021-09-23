@@ -67,17 +67,17 @@ export class UserController {
     //     return await this.userService.updateProfilePic(req.user, data);
     // }
 
-    @Put('/follower')
-    @UseGuards(JwtAuthGuard)
-    async editFollower(@Req() req:Request, @Body() body: any){
-        return await this.userService.updateFollow(req.user, 'follower', body.data)
-    }
+    // @Put('/follower')
+    // @UseGuards(JwtAuthGuard)
+    // async editFollower(@Req() req:Request, @Body() body: any){
+    //     return await this.userService.updateFollow(req.user, 'follower', body.data)
+    // }
 
-    @Put('/following')
-    @UseGuards(JwtAuthGuard)
-    async editFollowing(@Req() req:Request, @Body() body: any){
-        return await this.userService.updateFollow(req.user, 'following', body.data)
-    }
+    // @Put('/following')
+    // @UseGuards(JwtAuthGuard)
+    // async editFollowing(@Req() req:Request, @Body() body: any){
+    //     return await this.userService.updateFollow(req.user, 'following', body.data)
+    // }
 
     @Get('/favourite')
     @UseGuards(JwtAuthGuard)
@@ -111,7 +111,7 @@ export class UserController {
     @Post('/createRequest')
     @UseGuards(JwtAuthGuard)
     async createRequest(@Req() req, @Body() request: any){
-        await this.tradeService.createRequest(req.user.uid, request);
+        return await this.tradeService.createRequest(req.user.uid, request);
     }
 
     @Get('/getFile')
