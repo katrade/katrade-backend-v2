@@ -120,10 +120,16 @@ export class UserController {
         return await this.imageService.updateProfilePic(req.user, file.buffer);
     }
 
-    @Post('/createRequest')
+    @Post('/newRequest')
     @UseGuards(JwtAuthGuard)
     async createRequest(@Req() req, @Body() request: any){
         return await this.tradeService.createRequest(req.user.uid, request);
+    }
+
+    @Get('getUserRequest')
+    @UseGuards(JwtAuthGuard)
+    async getUserRequest(@Req() req){
+        
     }
 
     @Get('/getFile')

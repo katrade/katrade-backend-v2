@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Inventory } from './inventory.model';
 
 export type RequestDocument = Request & Document;
 
@@ -22,6 +23,11 @@ export class Request{
 
     @Prop()
     timeStamp: Date;
+}
+
+export interface RequestToClient{
+    user1: Inventory;
+    user2: Inventory;
 }
 
 export const RequestSchema = SchemaFactory.createForClass(Request);
