@@ -13,6 +13,17 @@ export class ImageService {
         @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
     ){}
 
+    async changeInventoryOneImageArrayToBase64(inventoryArray: Inventory[]){
+        let n:number = inventoryArray.length;
+        for(let i = 0; i < n; i++){
+            if(!inventoryArray[i].pictures){
+                continue;
+            }
+            inventoryArray[i].pictures[0] = await this.findAndChangeToBase64(inventoryArray[i].pictures[0]);
+        }
+        return inventoryArray;
+    }
+
     async changeInventoryImageArrayToBase64(inventoryArray: Inventory[]){
         let n:number = inventoryArray.length;
         for(let i = 0; i < n; i++){

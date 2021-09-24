@@ -35,7 +35,7 @@ export class InventoryController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('/getAllThing')
+    @Get('/getAllInventory')
     getAll(){
         return this.inventoryService.getAll();
     }
@@ -43,15 +43,14 @@ export class InventoryController {
     @UseGuards(JwtAuthGuard)
     @Get('/search')
     async search(@Query('query') query:string){
-        const list: Inventory[] = await this.inventoryService.getAll();
-        return await this.imageService.changeInventoryImageArrayToBase64(await this.inventoryService.searchInventory(list, query));
+        let search:Inventory[] = await this.inventoryService.searchInventory(query);
+        return await this.imageService.changeInventoryOneImageArrayToBase64(search);
     }
 
     @Post()
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('files'))
     async createnew(@Req() req:Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body('body') body:string) {
-    // async createnew(@Req() req:Request, @Body('body') body:string) {
         console.log(files);
         if(!files[0]){
             return {message: "no pic"}
@@ -62,9 +61,7 @@ export class InventoryController {
         } 
         const data = JSON.parse(body);
         const newInv = await this.inventoryService.newInv(req.user, data);
-        // console.log(newInv);
         const result = await this.imageService.newInvPic(newInv._id, filesBuffer);
-        // return {value: newInv ? true: false};
         return result;
     }
 

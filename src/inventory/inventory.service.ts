@@ -24,12 +24,16 @@ export class InventoryService {
     }
 
     async getAll(){
-        return await this.inventoryModel.find();
+        const inventory: Inventory[] = await this.inventoryModel.find();
+        return await this.imageService.changeInventoryOneImageArrayToBase64(inventory);
     }
 
     async getUserInventory(userId: string){
         let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
-        return await this.imageService.changeInventoryImageArrayToBase64(allUserInventory);
+        if(!allUserInventory[0]){
+            return [];
+        }
+        return await this.imageService.changeInventoryOneImageArrayToBase64(allUserInventory);
     }
 
     async deleteInventoryById(uid: string, id:string){
@@ -59,7 +63,8 @@ export class InventoryService {
         return tmp;
     }
 
-    async searchInventory(list: Inventory[] , query: string){
+    async searchInventory(query: string){
+        const list:Inventory[] = await this.inventoryModel.find();
         const options = {
             includeScore: true,
             threshold: 0.2,
