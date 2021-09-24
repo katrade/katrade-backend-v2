@@ -126,7 +126,6 @@ export class UserService {
     async getFavorite(payload: any):Promise<{data: Inventory[]}>{
         const user:User = await this.userModel.findOne({_id: payload.uid});
         const inventoryArray: Inventory[] = [];
-        console.log(user.favourite.length);
         for (let i = 0; i < user.favourite.length; i++) {
             let inventory: Inventory = await this.inventoryService.findInventoryById(user.favourite[i]);
             inventoryArray.push(inventory);

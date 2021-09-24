@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Inventory } from 'src/models/inventory.model';
+import { Inventory, ResponseInventory } from 'src/models/inventory.model';
 import { User } from '../models/user.model';
 import { ImageService } from '../image/image.service';
 const Fuse = require('fuse.js');

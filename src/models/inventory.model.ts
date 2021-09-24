@@ -47,3 +47,14 @@ export interface Inventory {
     pictures: string[];
     require: RequireAray[];
 }
+
+export interface ResponseInventory {
+    _id: string;
+    owner: string;
+    name: string;
+    detail: string;
+    timeStamp: Date,
+    category: subCat;
+    pictures: Buffer[];
+    require: RequireAray[];
+}

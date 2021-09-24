@@ -3,7 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/models/user.model';
 import { Inventory } from 'src/models/inventory.model';
-import { RequestDocument, Request } from 'src/models/request.model';
+import { RequestDocument, Request, RequestToClient } from 'src/models/request.model';
+import { ImageService } from 'src/image/image.service';
 
 @Injectable()
 export class TradeService {
@@ -11,7 +12,8 @@ export class TradeService {
         @InjectModel('Request') private readonly requestModel: Model<RequestDocument>,
         @InjectModel('User') private readonly userModel: Model<User>,
         @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
-        ){}
+        private readonly imageService: ImageService
+    ){}
 
     async createRequest(uid: string, request: Request){
         const inventory1: Inventory = await this.inventoryModel.findOne({_id: request.inventoryId1});
@@ -46,5 +48,19 @@ export class TradeService {
         let result: any = await this.requestModel.create(newRequest); 
         await this.userModel.updateOne({_id: request.userId2}, {$push: {requestInbox: [result._id.toString()]}});
         return {value: result ? true : false};
+    }
+
+    async getUserRequest(uid:string){
+        const request:Request[] = await this.requestModel.find({userId2 : uid});
+        let result: RequestToClient[] = [];
+        for(let i = 0; i < request.length; i++){
+            let i1:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId1}));
+            let i2:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId2}));
+            result.push({
+                inventory1: i1,
+                inventory2: i2
+            });
+        }
+        return result;
     }
 }

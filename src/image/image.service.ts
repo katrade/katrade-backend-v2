@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../models/user.model';
 import { ImageDocument, Image } from '../models/image.model';
-import { Inventory } from 'src/models/inventory.model';
+import { Inventory, ResponseInventory } from 'src/models/inventory.model';
 
 @Injectable()
 export class ImageService {
@@ -12,6 +12,44 @@ export class ImageService {
         @InjectModel('Image') private readonly imageModel: Model<ImageDocument>,
         @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
     ){}
+
+    // async changeInventoryOneImageArrayToBase64(inventoryArray: Inventory[]){
+    //     const n:number = inventoryArray.length;
+    //     let response: ResponseInventory[] = [];
+    //     for(let i = 0; i < n; i++){
+    //         const inventory = inventoryArray[i];
+    //         let tmp: ResponseInventory = {
+    //             _id: inventory._id,
+    //             owner: inventory.owner,
+    //             name: inventory.name,
+    //             detail: inventory.detail,
+    //             timeStamp: inventory.timeStamp,
+    //             category: inventory.category,
+    //             pictures:[],
+    //             require: inventory.require
+    //         }
+    //         if(!inventoryArray[i].pictures){
+    //             continue;
+    //         }
+    //         let inventoryImage:Image = await this.imageModel.findOne({_id: inventory.pictures[0]});
+    //         // inventoryArray[i].pictures[0] = await this.findAndChangeToBase64(inventoryArray[i].pictures[0]);
+    //         tmp.pictures.push(inventoryImage.image);
+    //         response.push(tmp)
+    //     }
+    //     // return inventoryArray;
+    //     return response;
+    // }
+
+    async changeInventoryImageToBase64(inventory: Inventory){
+        let n:number = inventory.pictures.length;
+        if(!inventory.pictures){
+            inventory.pictures = [];
+        }
+        else{
+            inventory.pictures[0] = await this.findAndChangeToBase64(inventory.pictures[0]);
+        }
+        return inventory;
+    }
 
     async changeInventoryOneImageArrayToBase64(inventoryArray: Inventory[]){
         let n:number = inventoryArray.length;

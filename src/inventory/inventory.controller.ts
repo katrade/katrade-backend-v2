@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, UseGuards, Query, Req, UseInterceptors, UploadedFiles, Res, Delete } from '@nestjs/common';
 import { Request } from 'express';
 import { InventoryService } from './inventory.service';
-import { Inventory } from '../models/inventory.model';
+import { Inventory, ResponseInventory } from '../models/inventory.model';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UserService } from 'src/user/user.service';

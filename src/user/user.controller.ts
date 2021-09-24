@@ -129,7 +129,7 @@ export class UserController {
     @Get('getUserRequest')
     @UseGuards(JwtAuthGuard)
     async getUserRequest(@Req() req){
-        
+        return await this.tradeService.getUserRequest(req.user.uid);
     }
 
     @Get('/getFile')
