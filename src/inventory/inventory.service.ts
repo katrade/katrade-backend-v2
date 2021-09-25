@@ -54,6 +54,7 @@ export class InventoryService {
     
     async newInv(payload: any, thing: Inventory): Promise<Inventory>{
         let newThing = new this.inventoryModel({
+            username:payload.username,
             owner: payload.uid,
             timeStamp: new Date(),
             ...thing

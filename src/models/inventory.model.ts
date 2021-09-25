@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose';
 export const inventorySchema = new mongoose.Schema({
     owner: String, //เป็นไอดีของเจ้าของสิ่งของนี้
     name: String,
+    username: String,
     detail: String,
     timeStamp: Date,
     category: {
@@ -40,6 +41,7 @@ export interface RequireAray {
 export interface Inventory {
     _id: string;
     owner: string;
+    username: string;
     name: string;
     detail: string;
     timeStamp: Date,
@@ -51,6 +53,7 @@ export interface Inventory {
 export interface ResponseInventory {
     _id: string;
     owner: string;
+    username: string;
     name: string;
     detail: string;
     timeStamp: Date,
