@@ -51,7 +51,6 @@ export class InventoryController {
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('files'))
     async createnew(@Req() req:Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body('body') body:string) {
-        console.log(files);
         if(!files[0]){
             return {message: "no pic"}
         }
