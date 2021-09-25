@@ -132,6 +132,12 @@ export class UserController {
         return await this.tradeService.getUserRequest(req.user.uid);
     }
 
+    @Get('/getUserPending')
+    @UseGuards(JwtAuthGuard)
+    async getUserPending(@Req() req){
+        return await this.tradeService.getUserPending(req.user.uid);
+    }
+
     @Get('/getFile')
     @UseGuards(JwtAuthGuard)
     async getFile(@Req() req){
