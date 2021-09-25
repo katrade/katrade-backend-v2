@@ -49,9 +49,9 @@ export class InventoryService {
     }
     
     async newInv(payload: any, thing: Inventory): Promise<Inventory>{
-        console.log(`${payload.username} add new Inv`);
+        let user = await this.userModel.findOne({_id: payload.uid})
         let newThing = new this.inventoryModel({
-            username:payload.username,
+            username: user.username,
             owner: payload.uid,
             timeStamp: new Date(),
             ...thing
