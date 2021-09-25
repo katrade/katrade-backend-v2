@@ -21,11 +21,7 @@ export class InventoryService {
             return {message: "Can't find this inventory"};
         }
         i.pictures = await this.imageService.findAndChangeToBase64Array(i.pictures);
-        const result = {
-            username: user.username,
-            ...i
-        }
-        return result;
+        return i;
     }
 
     async getAll(){
