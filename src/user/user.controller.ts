@@ -112,12 +112,14 @@ export class UserController {
 
     @Post('/updateProfilePic')
     @UseGuards(JwtAuthGuard)
-    @UseInterceptors(FileInterceptor('file'))
-    async uploadFile(@Req() req: Request, @UploadedFile() file: Express.Multer.File){
+    // @UseInterceptors(FileInterceptor('file'))
+    // async uploadFile(@Req() req: Request, @UploadedFile() file: Express.Multer.File){
+    async uploadFile(@Req() req, @Body('profilePic') profilePic:string):Promise<{value: boolean} | {message: string}>{
         // let b64 = file.buffer.toString('base64');
         // let b6 = Buffer.from(b64, 'base64');
         // console.log(b6);
-        return await this.imageService.updateProfilePic(req.user, file.buffer);
+        // return await this.imageService.updateProfilePic(req.user, file.buffer);
+        return await this.userService.updateProfilePic(req.user.uid, profilePic);
     }
 
     @Post('/newRequest')

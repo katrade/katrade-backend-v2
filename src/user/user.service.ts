@@ -171,6 +171,14 @@ export class UserService {
         return {message: "Doesn't has inventoryId"};
     }
 
+    async updateProfilePic(uid:string, profilePic:string){
+        if(profilePic && uid){
+            await this.userModel.updateOne({_id: uid}, {$set: {profilePic: profilePic}});
+            return {value: true}
+        }
+        return {message: "missing information"};
+    }
+
     async sendEmail(email: string, name: string){
         const token = Math.floor(1000 + Math.random() * 9000).toString();
         // create user in db

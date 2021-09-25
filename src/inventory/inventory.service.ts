@@ -16,11 +16,16 @@ export class InventoryService {
 
     async findInventoryById(inventoryId: string): Promise<Inventory | any>{
         let i:Inventory = await this.inventoryModel.findOne({_id: inventoryId});
+        let user:User = await this.userModel.findOne({_id: i.owner});
         if(!i){
             return {message: "Can't find this inventory"};
         }
         i.pictures = await this.imageService.findAndChangeToBase64Array(i.pictures);
-        return i;
+        const result = {
+            username: user.username,
+            ...i
+        }
+        return result;
     }
 
     async getAll(){

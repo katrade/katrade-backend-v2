@@ -36,10 +36,10 @@ export class AuthService {
 
     async getUser(payload: any){
         const user = await this.userService.findAny({_id: payload.uid});
-        const profilePic: Image = await this.imageService.findProfilePic(payload.uid);
-        if(profilePic){
-            user.profilePic = `data:image/jpeg;base64,${profilePic.image.toString('base64')}`;
-        }
+        // const profilePic: Image = await this.imageService.findProfilePic(payload.uid);
+        // if(profilePic){
+        //     user.profilePic = `data:image/jpeg;base64,${profilePic.image.toString('base64')}`;
+        // }
         return user;
     }
 
