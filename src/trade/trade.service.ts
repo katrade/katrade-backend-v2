@@ -53,12 +53,17 @@ export class TradeService {
     async getUserRequest(uid:string){
         const request:Request[] = await this.requestModel.find({userId2 : uid});
         let result: RequestToClient[] = [];
+        const u2:User = await this.userModel.findOne({_id: uid});
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId1}));
             let i2:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId2}));
+            let u1:User = await this.userModel.findOne({_id: i1.owner});
             result.push({
                 inventory1: i1,
-                inventory2: i2
+                username1: u1.username,
+                inventory2: i2,
+                username2: u2.username,
+                timeStamp: new Date(request[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
         }
         return result;
@@ -67,12 +72,17 @@ export class TradeService {
     async getUserPending(uid:string){
         const request:Request[] = await this.requestModel.find({userId1 : uid});
         let result: RequestToClient[] = [];
+        const u1:User = await this.userModel.findOne({_id: uid});
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId1}));
             let i2:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId2}));
+            let u2:User = await this.userModel.findOne({_id: i2.owner});
             result.push({
                 inventory1: i1,
-                inventory2: i2
+                username1: u1.username,
+                inventory2: i2,
+                username2: u2.username,
+                timeStamp: new Date(request[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
         }
         return result;

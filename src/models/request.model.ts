@@ -27,7 +27,10 @@ export class Request{
 
 export interface RequestToClient{
     inventory1: Inventory;
+    username1: string;
     inventory2: Inventory;
+    username2: string;
+    timeStamp: string;
 }
 
 export const RequestSchema = SchemaFactory.createForClass(Request);
