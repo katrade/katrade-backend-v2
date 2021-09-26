@@ -7,6 +7,9 @@ export class JwtAuthGuard extends AuthGuard('accessToken'){
         if (info instanceof TokenExpiredError){
             throw new UnauthorizedException('token expired');
         }
+        if(!user){
+            throw new UnauthorizedException('token malformed');
+        }
         return user;
     }
 }
