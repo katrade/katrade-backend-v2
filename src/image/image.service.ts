@@ -41,6 +41,7 @@ export class ImageService {
     // }
 
     async changeInventoryImageToBase64(inventory: Inventory){
+        console.log("hi-1")
         let n:number = inventory.pictures.length;
         console.log("hi0")
         if(!inventory.pictures){
