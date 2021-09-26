@@ -26,6 +26,7 @@ export class Request{
 }
 
 export interface RequestToClient{
+    requestId: string;
     inventory1: Inventory;
     inventory2: Inventory;
     timeStamp: string;

@@ -51,12 +51,13 @@ export class TradeService {
     }
 
     async getUserRequest(uid:string){
-        const request:Request[] = await this.requestModel.find({userId2 : uid});
+        const request:any[] = await this.requestModel.find({userId2 : uid});
         let result: RequestToClient[] = [];
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId1}));
             let i2:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId2}));
             result.push({
+                requestId: request[i]._id.toString(),
                 inventory1: i1,
                 inventory2: i2,
                 timeStamp: new Date(request[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
@@ -66,17 +67,28 @@ export class TradeService {
     }
 
     async getUserPending(uid:string){
-        const request:Request[] = await this.requestModel.find({userId1 : uid});
+        const request:any[] = await this.requestModel.find({userId1 : uid});
         let result: RequestToClient[] = [];
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId1}));
             let i2:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId2}));
             result.push({
+                requestId: request[i]._id.toString(),
                 inventory1: i1,
                 inventory2: i2,
                 timeStamp: new Date(request[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
         }
         return result;
+    }
+
+    async cancleRequest(requestId: string){
+        const request: Request = await this.requestModel.findOne({_id: requestId});
+        if(!request){
+            return {message: "Can't find this request"};
+        }
+        await this.userModel.updateOne({_id: request.userId2}, {$pull: {requestInbox: requestId}});
+        await this.requestModel.deleteOne({_id: requestId});
+        return {value: true};
     }
 }

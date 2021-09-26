@@ -1,4 +1,4 @@
-import { Put, Get, Body, Controller, Query, UseGuards, Req, UploadedFile, UseInterceptors, Patch } from '@nestjs/common';
+import { Put, Get, Body, Controller, Query, UseGuards, Req, UploadedFile, UseInterceptors, Patch, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '../models/user.model';
 import { Request, Express } from 'express';
@@ -122,6 +122,12 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     async getUserPending(@Req() req){
         return await this.tradeService.getUserPending(req.user.uid);
+    }
+
+    @Delete('cancleRequest')
+    @UseGuards(JwtAuthGuard)
+    async cancleRequest(@Req() req): Promise<{value: boolean} | {message: string}>{
+        return await this.tradeService.cancleRequest(req);
     }
 
     @Get('/getFile')
