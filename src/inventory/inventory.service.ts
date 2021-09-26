@@ -54,7 +54,7 @@ export class InventoryService {
         await this.imageService.deleteImage("inventoryPic", id);
         const requestArray = await this.tradeService.findRequestByInventoryId(id)
         for(let i = 0; i < requestArray.length; i++) {
-            await this.tradeService.cancleRequest(requestArray[i]._id);
+            await this.tradeService.cancelRequest(requestArray[i]._id);
         }
         return {value: true};
     }

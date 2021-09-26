@@ -85,7 +85,7 @@ export class TradeService {
         return result;
     }
 
-    async cancleRequest(requestId: string){
+    async cancelRequest(requestId: string){
         const request: Request = await this.requestModel.findOne({_id: requestId});
         if(!request){
             return {message: "Can't find this request"};

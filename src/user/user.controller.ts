@@ -124,10 +124,10 @@ export class UserController {
         return await this.tradeService.getUserPending(req.user.uid);
     }
 
-    @Delete('cancleRequest')
+    @Delete('cancelRequest')
     @UseGuards(JwtAuthGuard)
-    async cancleRequest(@Body('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
-        return await this.tradeService.cancleRequest(requestId);
+    async cancelRequest(@Body('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
+        return await this.tradeService.cancelRequest(requestId);
     }
 
     @Get('/getFile')
