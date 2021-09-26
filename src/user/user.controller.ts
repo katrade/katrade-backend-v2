@@ -72,13 +72,13 @@ export class UserController {
 
     @Patch('/pushFavourite')
     @UseGuards(JwtAuthGuard)
-    async pushFavourite(@Req() req, @Query('id') inventoryId:string){
+    async pushFavourite(@Req() req, @Body('id') inventoryId:string){
         return await this.userService.pushFavourite(req.user.uid, inventoryId);
     }
 
     @Patch('/pullFavourite')
     @UseGuards(JwtAuthGuard)
-    async putFavourite(@Req() req, @Query('id') inventoryId:string){
+    async putFavourite(@Req() req, @Body('id') inventoryId:string){
         return await this.userService.pullFavourite(req.user.uid, inventoryId);
     }
 
