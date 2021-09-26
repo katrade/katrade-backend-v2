@@ -6,6 +6,7 @@ export const inventorySchema = new mongoose.Schema({
     username: String,
     detail: String,
     timeStamp: Date,
+    lock: Number,
     category: {
         parentCategoryEn: String,
         parentCategoryTh: String,
@@ -42,6 +43,7 @@ export interface Inventory {
     _id: string;
     owner: string;
     username: string;
+    lock: number;
     name: string;
     detail: string;
     timeStamp: Date,
