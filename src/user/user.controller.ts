@@ -126,7 +126,7 @@ export class UserController {
 
     @Delete('cancelRequest')
     @UseGuards(JwtAuthGuard)
-    async cancelRequest(@Body('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
+    async cancelRequest(@Query('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
         return await this.tradeService.cancelRequest(requestId);
     }
 
