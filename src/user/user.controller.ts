@@ -7,13 +7,15 @@ import { Post } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageService } from 'src/image/image.service';
 import { TradeService } from 'src/trade/trade.service';
+import { InventoryService } from 'src/inventory/inventory.service';
 
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService,
         private readonly imageService: ImageService,
-        private readonly tradeService: TradeService
+        private readonly tradeService: TradeService,
+        private readonly inventoryService: InventoryService
     ) {}
 
     @Get('/findAll')
@@ -60,24 +62,6 @@ export class UserController {
     async info(@Req() req:Request, @Body() data: any){
         return await this.userService.changeInfo(req.user, data);
     }
-
-    // @Post('/updateProfilePic')
-    // @UseGuards(JwtAuthGuard)
-    // async updateProfilePic(@Req() req:Request, @Body() data: any){
-    //     return await this.userService.updateProfilePic(req.user, data);
-    // }
-
-    // @Put('/follower')
-    // @UseGuards(JwtAuthGuard)
-    // async editFollower(@Req() req:Request, @Body() body: any){
-    //     return await this.userService.updateFollow(req.user, 'follower', body.data)
-    // }
-
-    // @Put('/following')
-    // @UseGuards(JwtAuthGuard)
-    // async editFollowing(@Req() req:Request, @Body() body: any){
-    //     return await this.userService.updateFollow(req.user, 'following', body.data)
-    // }
 
     @Get('/favourite')
     @UseGuards(JwtAuthGuard)

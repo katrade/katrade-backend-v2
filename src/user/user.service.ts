@@ -123,18 +123,10 @@ export class UserService {
         return {value: result ? true : false};
     }
 
-    async getFavorite(payload: any):Promise<{data: Inventory[]}>{
+    async getFavorite(payload: any):Promise<Inventory[]>{
         const user:User = await this.userModel.findOne({_id: payload.uid});
-        const inventoryArray: Inventory[] = [];
-        for (let i = 0; i < user.favourite.length; i++) {
-            let inventory: Inventory = await this.inventoryService.findInventoryById(user.favourite[i]);
-            inventoryArray.push(inventory);
-        }
-        return { data: inventoryArray };
-    }
-
-    async addFavorite(payload: any, inventoryId: string){
-        await this.userModel.updateOne({_id: payload.uid}, {$push: {favourite: [inventoryId]}});
+        const inventoryArray: Inventory[] = await this.inventoryService.getInventoryByIdArray(user.favourite);
+        return inventoryArray;
     }
 
     async follow(uid:string, userTargetId:string){

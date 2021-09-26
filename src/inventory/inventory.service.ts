@@ -14,6 +14,11 @@ export class InventoryService {
         private readonly imageService: ImageService
     ){}
 
+    async getInventoryByIdArray(id: string[]){
+        let inventoryArray: Inventory[] = await this.inventoryModel.find({_id: {$in : id}});
+        return this.imageService.changeInventoryOneImageArrayToBase64(inventoryArray);
+    }
+
     async findInventoryById(inventoryId: string): Promise<Inventory | any>{
         let i:Inventory = await this.inventoryModel.findOne({_id: inventoryId});
         let user:User = await this.userModel.findOne({_id: i.owner});
