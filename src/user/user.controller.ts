@@ -126,8 +126,8 @@ export class UserController {
 
     @Delete('cancleRequest')
     @UseGuards(JwtAuthGuard)
-    async cancleRequest(@Req() req): Promise<{value: boolean} | {message: string}>{
-        return await this.tradeService.cancleRequest(req);
+    async cancleRequest(@Body('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
+        return await this.tradeService.cancleRequest(requestId);
     }
 
     @Get('/getFile')

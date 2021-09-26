@@ -50,6 +50,8 @@ export class TradeService {
         return {value: result ? true : false};
     }
 
+    
+
     async getUserRequest(uid:string){
         const request:any[] = await this.requestModel.find({userId2 : uid});
         let result: RequestToClient[] = [];
@@ -91,5 +93,9 @@ export class TradeService {
         await this.userModel.updateOne({_id: request.userId2}, {$pull: {requestInbox: requestId}});
         await this.requestModel.deleteOne({_id: requestId});
         return {value: true};
+    }
+    
+    async findRequestByInventoryId(inventoryId: string){
+        return await this.requestModel.find({$or: [{inventoryId1: inventoryId}, {inventoryId2: inventoryId}]})
     }
 }

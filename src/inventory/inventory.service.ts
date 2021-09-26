@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Inventory, ResponseInventory } from 'src/models/inventory.model';
 import { User } from '../models/user.model';
 import { ImageService } from '../image/image.service';
+import { TradeService } from 'src/trade/trade.service';
 const Fuse = require('fuse.js');
 
 @Injectable()
@@ -11,7 +12,8 @@ export class InventoryService {
     constructor(
         @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
         @InjectModel('User') private readonly userModel: Model<User>,
-        private readonly imageService: ImageService
+        private readonly imageService: ImageService,
+        private readonly tradeService: TradeService
     ){}
 
     async getInventoryByIdArray(id: string[]){
@@ -50,6 +52,10 @@ export class InventoryService {
         await this.userModel.updateOne({_id: uid}, {$pull: {inventories: id}});
         await this.inventoryModel.deleteOne({_id: id});
         await this.imageService.deleteImage("inventoryPic", id);
+        const requestArray = await this.tradeService.findRequestByInventoryId(id)
+        for(let i = 0; i < requestArray.length; i++) {
+            await this.tradeService.cancleRequest(requestArray[i]._id);
+        }
         return {value: true};
     }
     
