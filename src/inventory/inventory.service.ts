@@ -58,6 +58,7 @@ export class InventoryService {
         let newThing = new this.inventoryModel({
             username: user.username,
             owner: payload.uid,
+            lock: 0,
             timeStamp: new Date(),
             ...thing
         })
