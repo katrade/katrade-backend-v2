@@ -11,14 +11,13 @@ export class TradeService {
     constructor(
         @InjectModel('Request') private readonly requestModel: Model<RequestDocument>,
         @InjectModel('User') private readonly userModel: Model<User>,
-        @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
-        private readonly imageService: ImageService
+        @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>
     ){}
 
     async createRequest(uid: string, request: Request){
         const inventory1: Inventory = await this.inventoryModel.findOne({_id: request.inventoryId1});
         const inventory2: Inventory = await this.inventoryModel.findOne({_id: request.inventoryId2});
-        if(!inventory1 || inventory2){
+        if(!inventory1 || !inventory2){
             return {message: "Inventory has been deleted"};
         }
         if(inventory1 && inventory2){
@@ -59,8 +58,8 @@ export class TradeService {
         const request:any[] = await this.requestModel.find({userId2 : uid});
         let result: RequestToClient[] = [];
         for(let i = 0; i < request.length; i++){
-            let i1:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId1}));
-            let i2:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId2}));
+            let i1:Inventory = await this.inventoryModel.findOne({_id: request[i].inventoryId1});
+            let i2:Inventory = await this.inventoryModel.findOne({_id: request[i].inventoryId2});
             result.push({
                 requestId: request[i]._id.toString(),
                 inventory1: i1,
@@ -76,8 +75,8 @@ export class TradeService {
         console.log(request);
         let result: RequestToClient[] = [];
         for(let i = 0; i < request.length; i++){
-            let i1:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId1}));
-            let i2:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId2}));
+            let i1:Inventory = await this.inventoryModel.findOne({_id: request[i].inventoryId1});
+            let i2:Inventory = await this.inventoryModel.findOne({_id: request[i].inventoryId2});
             result.push({
                 requestId: request[i]._id.toString(),
                 inventory1: i1,

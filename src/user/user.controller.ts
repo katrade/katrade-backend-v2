@@ -5,7 +5,6 @@ import { Request, Express } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Post } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ImageService } from 'src/image/image.service';
 import { TradeService } from 'src/trade/trade.service';
 import { InventoryService } from 'src/inventory/inventory.service';
 
@@ -13,7 +12,6 @@ import { InventoryService } from 'src/inventory/inventory.service';
 export class UserController {
     constructor(
         private readonly userService: UserService,
-        private readonly imageService: ImageService,
         private readonly tradeService: TradeService,
         private readonly inventoryService: InventoryService
     ) {}
@@ -130,10 +128,10 @@ export class UserController {
         return await this.tradeService.cancelRequest(requestId);
     }
 
-    @Get('/getFile')
-    @UseGuards(JwtAuthGuard)
-    async getFile(@Req() req){
-        let uid: string = req.user.uid;
-        return await this.imageService.findProfilePic(uid);
-    }
+    // @Get('/getFile')
+    // @UseGuards(JwtAuthGuard)
+    // async getFile(@Req() req){
+    //     let uid: string = req.user.uid;
+    //     return await this.imageService.findProfilePic(uid);
+    // }
 }

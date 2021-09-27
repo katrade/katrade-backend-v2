@@ -7,7 +7,6 @@ import { MailService } from 'src/mail/mail.service';
 import { JwtModule } from '@nestjs/jwt';
 import { VerifyEmailStrategy } from 'src/auth/strategies/verifyEmail.straregy';
 import { PassportModule } from '@nestjs/passport';
-import { ImageModule } from 'src/image/image.module';
 import { TradeModule } from 'src/trade/trade.module';
 import { InventoryService } from 'src/inventory/inventory.service';
 import { InventoryModule } from 'src/inventory/inventory.module';
@@ -22,7 +21,6 @@ require('dotenv').config();
       signOptions: { expiresIn: process.env.expiresEmailKey },
     }),
     PassportModule.register({defaultStrategy: 'verifyEmailToken'}),
-    ImageModule,
     TradeModule,
     InventoryModule
   ],

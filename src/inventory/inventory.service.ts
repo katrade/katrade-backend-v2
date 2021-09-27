@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Inventory, ResponseInventory } from 'src/models/inventory.model';
 import { User } from '../models/user.model';
-import { ImageService } from '../image/image.service';
 import { TradeService } from 'src/trade/trade.service';
 const Fuse = require('fuse.js');
 
@@ -12,37 +11,43 @@ export class InventoryService {
     constructor(
         @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
         @InjectModel('User') private readonly userModel: Model<User>,
-        private readonly imageService: ImageService,
         private readonly tradeService: TradeService
     ){}
 
     async getInventoryByIdArray(id: string[]){
         let inventoryArray: Inventory[] = await this.inventoryModel.find({_id: {$in : id}});
-        return this.imageService.changeInventoryOneImageArrayToBase64(inventoryArray);
+        return inventoryArray;
+        // return this.imageService.changeInventoryOneImageArrayToBase64(inventoryArray);
     }
 
     async findInventoryById(inventoryId: string): Promise<Inventory | any>{
         let i:Inventory = await this.inventoryModel.findOne({_id: inventoryId});
-        let user:User = await this.userModel.findOne({_id: i.owner});
-        if(!i){
-            return {message: "Can't find this inventory"};
-        }
-        i.pictures = await this.imageService.findAndChangeToBase64Array(i.pictures);
+        // let user:User = await this.userModel.findOne({_id: i.owner});
+        // if(!i){
+        //     return {message: "Can't find this inventory"};
+        // }
+        // i.pictures = await this.imageService.findAndChangeToBase64Array(i.pictures);
         return i;
     }
 
     async getAll(){
         const inventory: Inventory[] = await this.inventoryModel.find();
-        return await this.imageService.changeInventoryOneImageArrayToBase64(inventory);
+        return inventory;
+        // return await this.imageService.changeInventoryOneImageArrayToBase64(inventory);
     }
 
     async getUserInventory(userId: string){
         let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
-        if(!allUserInventory[0]){
-            return [];
-        }
-        return await this.imageService.changeInventoryOneImageArrayToBase64(allUserInventory);
+        return allUserInventory;
     }
+
+    // async getUserInventory(userId: string){
+    //     let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
+    //     if(!allUserInventory[0]){
+    //         return [];
+    //     }
+    //     return await this.imageService.changeInventoryOneImageArrayToBase64(allUserInventory);
+    // }
 
     async deleteInventoryById(uid: string, id:string){
         let user:User = await this.userModel.findOne({_id: uid});
@@ -51,8 +56,7 @@ export class InventoryService {
         }
         await this.userModel.updateOne({_id: uid}, {$pull: {inventories: id}});
         await this.inventoryModel.deleteOne({_id: id});
-        await this.imageService.deleteImage("inventoryPic", id);
-        const requestArray = await this.tradeService.findRequestByInventoryId(id)
+        const requestArray = await this.tradeService.findRequestByInventoryId(id);
         for(let i = 0; i < requestArray.length; i++) {
             await this.tradeService.cancelRequest(requestArray[i]._id);
         }

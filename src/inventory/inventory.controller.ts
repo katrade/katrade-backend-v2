@@ -10,8 +10,7 @@ import { ImageService } from 'src/image/image.service';
 @Controller('inventory')
 export class InventoryController {
     constructor(
-        private readonly inventoryService: InventoryService,
-        private readonly imageService: ImageService
+        private readonly inventoryService: InventoryService
     ) {}
 
     @UseGuards(JwtAuthGuard)
@@ -44,24 +43,17 @@ export class InventoryController {
     @Get('/search')
     async search(@Query('query') query:string){
         let search:Inventory[] = await this.inventoryService.searchInventory(query);
-        return await this.imageService.changeInventoryOneImageArrayToBase64(search);
+        return search;
+        // return await this.imageService.changeInventoryOneImageArrayToBase64(search);
     }
 
     @Post()
     @UseGuards(JwtAuthGuard)
-    @UseInterceptors(FilesInterceptor('files'))
-    async createnew(@Req() req:Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body('body') body:string) {
-        if(!files[0]){
-            return {message: "no pic"}
-        }
-        let filesBuffer: Buffer[] = [];
-        for(let i = 0; i < files.length; i++){
-            filesBuffer.push(files[i].buffer);
-        } 
-        const data = JSON.parse(body);
-        const newInv = await this.inventoryService.newInv(req.user, data);
-        const result = await this.imageService.newInvPic(newInv._id, filesBuffer);
-        return result;
+    async createnew(@Req() req:Request, @Body() body:Inventory) {
+        // const data = JSON.parse(body);
+        return await this.inventoryService.newInv(req.user, body);
+        // const result = await this.imageService.newInvPic(newInv._id, filesBuffer);
+        // return result;
     }
 
     // @Post()

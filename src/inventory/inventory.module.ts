@@ -13,7 +13,6 @@ import { TradeModule } from 'src/trade/trade.module';
             {name: "Inventory", schema: inventorySchema}, 
             {name: "User", schema: userSchema}
         ]),
-        ImageModule,
         TradeModule,
     ],
     controllers: [InventoryController],
