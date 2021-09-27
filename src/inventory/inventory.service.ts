@@ -32,8 +32,9 @@ export class InventoryService {
     }
 
     async getAll(){
-        const inventory: Inventory[] = await this.inventoryModel.find();
-        return await this.imageService.changeInventoryOneImageArrayToBase64(inventory);
+        return await this.inventoryModel.find();
+        // const inventory: Inventory[] = await this.inventoryModel.find();
+        // return await this.imageService.changeInventoryOneImageArrayToBase64(inventory);
     }
 
     async getUserInventory(userId: string){

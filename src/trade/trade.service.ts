@@ -54,6 +54,8 @@ export class TradeService {
 
     async getUserRequest(uid:string){
         const request:any[] = await this.requestModel.find({userId2 : uid});
+        console.log("this is request")
+        console.log(request);
         let result: RequestToClient[] = [];
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId1}));
@@ -70,6 +72,7 @@ export class TradeService {
 
     async getUserPending(uid:string){
         const request:any[] = await this.requestModel.find({userId1 : uid});
+        console.log("this is pending")
         console.log(request);
         let result: RequestToClient[] = [];
         for(let i = 0; i < request.length; i++){
