@@ -18,6 +18,9 @@ export class TradeService {
     async createRequest(uid: string, request: Request){
         const inventory1: Inventory = await this.inventoryModel.findOne({_id: request.inventoryId1});
         const inventory2: Inventory = await this.inventoryModel.findOne({_id: request.inventoryId2});
+        if(!inventory1 || inventory2){
+            return {message: "Inventory has been deleted"};
+        }
         if(inventory1 && inventory2){
             if(inventory1.owner !== uid && inventory2.owner !== request.userId2){
                 return {message: "mai chai kong meung tang kuu"};
