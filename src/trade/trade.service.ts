@@ -56,8 +56,11 @@ export class TradeService {
         const request:any[] = await this.requestModel.find({userId2 : uid});
         let result: RequestToClient[] = [];
         for(let i = 0; i < request.length; i++){
-            let i1:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId1}));
-            let i2:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId2}));
+            const inventoryTmp1: Inventory = await this.inventoryModel.findOne({_id: request[i].inventoryId1});
+            const inventoryTmp2: Inventory = await this.inventoryModel.findOne({_id: request[i].inventoryId2});
+            if(!inventoryTmp2 || inventoryTmp1) continue;
+            const i1:Inventory = await this.imageService.changeInventoryImageToBase64(inventoryTmp1);
+            const i2:Inventory = await this.imageService.changeInventoryImageToBase64(inventoryTmp2);
             result.push({
                 requestId: request[i]._id.toString(),
                 inventory1: i1,
@@ -73,8 +76,11 @@ export class TradeService {
         console.log(request);
         let result: RequestToClient[] = [];
         for(let i = 0; i < request.length; i++){
-            let i1:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId1}));
-            let i2:Inventory = await this.imageService.changeInventoryImageToBase64(await this.inventoryModel.findOne({_id: request[i].inventoryId2}));
+            const inventoryTmp1: Inventory = await this.inventoryModel.findOne({_id: request[i].inventoryId1});
+            const inventoryTmp2: Inventory = await this.inventoryModel.findOne({_id: request[i].inventoryId2});
+            if(!inventoryTmp2 || inventoryTmp1) continue;
+            let i1:Inventory = await this.imageService.changeInventoryImageToBase64(inventoryTmp1);
+            let i2:Inventory = await this.imageService.changeInventoryImageToBase64(inventoryTmp2);
             result.push({
                 requestId: request[i]._id.toString(),
                 inventory1: i1,
