@@ -4,7 +4,8 @@ import { Model } from 'mongoose';
 import { User } from 'src/models/user.model';
 import { Inventory } from 'src/models/inventory.model';
 import { RequestDocument, Request, RequestToClient } from 'src/models/request.model';
-import { ImageService } from 'src/image/image.service';
+import { InventoryService } from 'src/inventory/inventory.service'
+
 
 @Injectable()
 export class TradeService {
@@ -99,5 +100,37 @@ export class TradeService {
     
     async findRequestByInventoryId(inventoryId: string){
         return await this.requestModel.find({$or: [{inventoryId1: inventoryId}, {inventoryId2: inventoryId}]})
+    }
+
+    async lockInventory(inventoryId: string){
+        await this.inventoryModel.updateOne({_id: inventoryId}, {$set: {lock: 1}});
+        return true
+    }
+
+    async findRequestByInventory2Id(inventoryId1: string, inventoryId2: string){
+        return await this.requestModel.find({$or: [{inventoryId1: inventoryId1}, {inventoryId2: inventoryId1},{inventoryId1: inventoryId2}, {inventoryId2: inventoryId2}]})
+    }
+
+    async lockRequestAndInventory(requestId: string){
+        const request:Request = await this.requestModel.findOne({_id: requestId});
+        const inventory1: Inventory = await this.inventoryModel.findOne({_id: request.inventoryId1});
+        const inventory2: Inventory = await this.inventoryModel.findOne({_id: request.inventoryId2});
+        if(!request){
+            return {message: "Can't find this request"};
+        }
+        if(inventory1.lock === 1 || inventory2.lock === 1){
+            return {message: "Inventory has been locked"};
+        }
+        await this.requestModel.updateOne({_id: requestId}, {$set: {state: 1}});
+        await this.lockInventory(request.inventoryId1);
+        await this.lockInventory(request.inventoryId2);
+        const requests = await this.findRequestByInventory2Id(request.inventoryId1, request.inventoryId2);
+        for(let i = 0; i < requests.length; i++) {
+            if(requests[i].inventoryId1 === request.inventoryId1 && requests[i].inventoryId2 === request.inventoryId2){
+                continue;
+            }
+            await this.cancelRequest(requests[i]._id);
+        }
+        return {value: true};
     }
 }
