@@ -122,10 +122,16 @@ export class UserController {
         return await this.tradeService.getUserPending(req.user.uid);
     }
 
-    @Delete('cancelRequest')
+    @Delete('/cancelRequest')
     @UseGuards(JwtAuthGuard)
     async cancelRequest(@Query('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
         return await this.tradeService.cancelRequest(requestId);
+    }
+
+    @Patch('/lockRequest')
+    @UseGuards(JwtAuthGuard)
+    async lockRequest(@Body('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
+        return await this.tradeService.lockRequestAndInventory(requestId);
     }
 
     // @Get('/getFile')

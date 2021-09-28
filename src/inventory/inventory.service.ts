@@ -31,7 +31,7 @@ export class InventoryService {
     }
 
     async getAll(){
-        const inventory: Inventory[] = await this.inventoryModel.find();
+        const inventory: Inventory[] = await this.inventoryModel.find({lock: 0});
         return inventory;
         // return await this.imageService.changeInventoryOneImageArrayToBase64(inventory);
     }
@@ -63,7 +63,7 @@ export class InventoryService {
         return {value: true};
     }
     
-    async newInv(payload: any, thing: Inventory): Promise<Inventory>{
+    async newInv(payload: any, thing: Inventory): Promise<{value: boolean}>{
         let user = await this.userModel.findOne({_id: payload.uid})
         let newThing = new this.inventoryModel({
             username: user.username,
@@ -76,14 +76,14 @@ export class InventoryService {
         await this.inventoryModel.create(newThing).then(async (response) => {
             tmp = response;
             await this.userModel.updateOne({_id: payload.uid}, {$push: {inventories: [response._id.toString()]}}).then(() => {
-                console.log(`Already push in ${payload.uid}`)
+                console.log(`Already push in ${payload.uid}`);
             })
         })
-        return tmp;
+        return {value: true};
     }
 
     async searchInventory(query: string){
-        const list:Inventory[] = await this.inventoryModel.find();
+        const list:Inventory[] = await this.inventoryModel.find({lock: 0});
         const options = {
             includeScore: true,
             threshold: 0.2,
@@ -102,5 +102,4 @@ export class InventoryService {
         const fuse = new Fuse(list, options);
         return await fuse.search(query);
     }
-
 }
