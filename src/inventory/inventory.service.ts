@@ -18,31 +18,38 @@ export class InventoryService {
 
     async getInventoryByIdArray(id: string[]){
         let inventoryArray: Inventory[] = await this.inventoryModel.find({_id: {$in : id}});
-        return this.imageService.changeInventoryOneImageArrayToBase64(inventoryArray);
+        return inventoryArray;
+        // return this.imageService.changeInventoryOneImageArrayToBase64(inventoryArray);
     }
 
     async findInventoryById(inventoryId: string): Promise<Inventory | any>{
         let i:Inventory = await this.inventoryModel.findOne({_id: inventoryId});
-        let user:User = await this.userModel.findOne({_id: i.owner});
-        if(!i){
-            return {message: "Can't find this inventory"};
-        }
-        i.pictures = await this.imageService.findAndChangeToBase64Array(i.pictures);
+        // let user:User = await this.userModel.findOne({_id: i.owner});
+        // if(!i){
+        //     return {message: "Can't find this inventory"};
+        // }
+        // i.pictures = await this.imageService.findAndChangeToBase64Array(i.pictures);
         return i;
     }
 
     async getAll(){
         const inventory: Inventory[] = await this.inventoryModel.find();
-        return await this.imageService.changeInventoryOneImageArrayToBase64(inventory);
+        return inventory;
+        // return await this.imageService.changeInventoryOneImageArrayToBase64(inventory);
     }
 
     async getUserInventory(userId: string){
         let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
-        if(!allUserInventory[0]){
-            return [];
-        }
-        return await this.imageService.changeInventoryOneImageArrayToBase64(allUserInventory);
+        return allUserInventory;
     }
+
+    // async getUserInventory(userId: string){
+    //     let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
+    //     if(!allUserInventory[0]){
+    //         return [];
+    //     }
+    //     return await this.imageService.changeInventoryOneImageArrayToBase64(allUserInventory);
+    // }
 
     async deleteInventoryById(uid: string, id:string){
         let user:User = await this.userModel.findOne({_id: uid});
