@@ -41,20 +41,6 @@ export class UserController {
         return this.userService.sendEmail(data.Email, data.Name);
     }
 
-    @Get('/follower')
-    @UseGuards(JwtAuthGuard)
-    async follower(@Req() req:Request){
-        let result = await this.userService.getFollow(req.user, "follower");
-        return {data: result};
-    }
-
-    @Get('/following')
-    @UseGuards(JwtAuthGuard)
-    async following(@Req() req:Request){
-        let result = await this.userService.getFollow(req.user, "following");
-        return {data: result};
-    }
-
     @Put('/info')
     @UseGuards(JwtAuthGuard)
     async info(@Req() req:Request, @Body() data: any){
@@ -86,10 +72,28 @@ export class UserController {
         return await this.userService.setUsername(req.user, newUsername);
     }
 
-    @Put('/follow')
+    @Post('/follow')
     @UseGuards(JwtAuthGuard)
-    async follow(@Req() req, @Query('id') id:string){
+    async follow(@Req() req, @Body('id') id:string){
         return await this.userService.follow(req.user.uid, id);
+    }
+
+    @Post('/unFollow')
+    @UseGuards(JwtAuthGuard)
+    async unFollow(@Req() req, @Body('id') id:string){
+        return await this.userService.unFollow(req.user.uid, id);
+    }
+
+    @Get('/checkFollow')
+    @UseGuards(JwtAuthGuard)
+    async checkFollow(@Req() req, @Query('id') id:string){
+        return await this.userService.checkFollow(req.user.uid, id);
+    }
+
+    @Get('/follow')
+    @UseGuards(JwtAuthGuard)
+    async follower(@Req() req){
+        return await this.userService.getFollow(req.user.uid);
     }
 
     @Post('/updateProfilePic')
@@ -132,6 +136,18 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     async lockRequest(@Body('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
         return await this.tradeService.lockRequestAndInventory(requestId);
+    }
+
+    @Patch('/acceptRequest')
+    @UseGuards(JwtAuthGuard)
+    async acceptRequest(@Body('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
+        return await this.tradeService.AcceptRequest(requestId);
+    }
+
+    @Get('/getUserProgess')
+    @UseGuards(JwtAuthGuard)
+    async getUserProgess(@Req() req){
+        return await this.tradeService.GetUserProgess(req.user.uid);
     }
 
     // @Get('/getFile')

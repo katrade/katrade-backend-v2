@@ -10,12 +10,13 @@ import { PassportModule } from '@nestjs/passport';
 import { TradeModule } from 'src/trade/trade.module';
 import { InventoryService } from 'src/inventory/inventory.service';
 import { InventoryModule } from 'src/inventory/inventory.module';
-import {inventorySchema } from 'src/models/inventory.model';
+import { inventorySchema } from 'src/models/inventory.model';
+import { FollowSchema } from 'src/models/follow.model';
 require('dotenv').config();
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{name: 'User', schema: userSchema}, {name: "Inventory", schema: inventorySchema},]),
+    MongooseModule.forFeature([{name: 'User', schema: userSchema}, {name: "Inventory", schema: inventorySchema}, {name: 'Follow', schema: FollowSchema}]),
     JwtModule.register({
       secret: process.env.secrectVerifyEmailKey,
       signOptions: { expiresIn: process.env.expiresEmailKey },

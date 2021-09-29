@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import { User } from 'src/models/user.model';
 import { Inventory } from 'src/models/inventory.model';
 import { RequestDocument, Request, RequestToClient } from 'src/models/request.model';
-import { InventoryService } from 'src/inventory/inventory.service'
 
 
 @Injectable()
@@ -56,7 +55,7 @@ export class TradeService {
     
 
     async getUserRequest(uid:string){
-        const request:any[] = await this.requestModel.find({userId2 : uid});
+        const request:any[] = await this.requestModel.find({userId2 : uid, state: 0});
         let result: RequestToClient[] = [];
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.inventoryModel.findOne({_id: request[i].inventoryId1});
@@ -72,8 +71,7 @@ export class TradeService {
     }
 
     async getUserPending(uid:string){
-        const request:any[] = await this.requestModel.find({userId1 : uid});
-        console.log(request);
+        const request:any[] = await this.requestModel.find({userId1 : uid, state: 0});
         let result: RequestToClient[] = [];
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.inventoryModel.findOne({_id: request[i].inventoryId1});
@@ -121,7 +119,7 @@ export class TradeService {
         if(inventory1.lock === 1 || inventory2.lock === 1){
             return {message: "Inventory has been locked"};
         }
-        await this.requestModel.updateOne({_id: requestId}, {$set: {state: 1}});
+        await this.requestModel.updateOne({_id: requestId}, {$set: {state: 2}});
         await this.lockInventory(request.inventoryId1);
         await this.lockInventory(request.inventoryId2);
         const requests = await this.findRequestByInventory2Id(request.inventoryId1, request.inventoryId2);
@@ -132,5 +130,31 @@ export class TradeService {
             await this.cancelRequest(requests[i]._id);
         }
         return {value: true};
+    }
+
+    async AcceptRequest(requestId: string){
+        const request: Request = await this.requestModel.findOne({_id: requestId});
+        if(!request){
+            return {message: "Can't find request"};
+        }
+        await this.requestModel.updateOne({_id: requestId}, {$set: {state: 1}});
+        return {value: true};
+    }
+
+    async GetUserProgess(uid: string){
+        let requestArray = await this.requestModel.find({$or: [{userId1: uid}, {userId2: uid}], state : 1});
+        console.log(requestArray);
+        let result: RequestToClient[] = [];
+        for(let i = 0; i < requestArray.length; i++){
+            let inventory1: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].inventoryId1});
+            let inventory2: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].inventoryId2});
+            result.push({
+                requestId: requestArray[i]._id.toString(),
+                inventory1: inventory1,
+                inventory2: inventory2,
+                timeStamp: new Date(requestArray[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
+            });
+        }
+        return result;
     }
 }

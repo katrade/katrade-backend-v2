@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
 import { InventoryService } from 'src/inventory/inventory.service';
+import { FollowDocument, Follow } from 'src/models/follow.model';
 require('dotenv').config();
 
 @Injectable()
@@ -15,7 +16,8 @@ export class UserService {
         @InjectModel('User') private readonly userModel: Model<User>,
         private readonly mailService: MailService,
         private readonly jwtService: JwtService,
-        private readonly inventoryService: InventoryService
+        private readonly inventoryService: InventoryService,
+        @InjectModel('Follow') private readonly followModel: Model<FollowDocument>,
     ){}
 
     async findForSignin(query: string): Promise<User>{
@@ -65,8 +67,6 @@ export class UserService {
             profilePic: "",
             verifyEmail: 0,
             favourite:[],
-            follower:[],
-            following:[],
             inventories:[]
         });
         let m: any = "";
@@ -107,12 +107,6 @@ export class UserService {
         return {message: "verify"};
     }
 
-    async getFollow(payload:any, select: string): Promise<any>{
-        let uid = payload.uid;
-        let user = await this.userModel.findOne({_id: uid});
-        return select === 'followers' ? user.followers: user.following;
-    }
-
     async changeInfo(payload: any, data: any): Promise<any>{
         let result:any = await this.userModel.updateOne({_id: payload.uid}, {$set: data});
         return {value: result ? true : false};
@@ -131,11 +125,47 @@ export class UserService {
 
     async follow(uid:string, userTargetId:string){
         if(uid === userTargetId){
-            return {message : "You can't follow yourself"};
+            return {message: "Can't follow yourself"}
         }
-        await this.userModel.updateOne({_id: uid}, {$push: {following:[userTargetId]}});
-        await this.userModel.updateOne({_id: userTargetId}, {$push: {followers:[uid]}});
+        const newFollow = new this.followModel({
+            from: uid.toString(),
+            to: userTargetId.toString(),
+            timeStamp: new Date()
+        })
+        newFollow.save();
         return {value: true};
+    }
+
+    async unFollow(uid:string, userTargetId: string){
+        if(uid === userTargetId){
+            return {message: "Can't unfollow yourself"}
+        }
+        await this.followModel.deleteOne({from: uid, to: userTargetId});
+        return {value: true};
+    }
+
+    async getFollow(uid:string): Promise<any>{
+        const fr = await this.followModel.find({to: uid});
+        const fg = await this.followModel.find({from: uid});
+        let follower: string[] = [];
+        let following: string[] = [];
+        for(let i = 0; i < fr.length; i++) {
+            follower.push(fr[i].from)
+        }
+        for(let i = 0; i < fg.length; i++) {
+            following.push(fg[i].to)
+        }
+        return {follower: follower, following: following};
+    }
+
+    async checkFollow(uid:string, targetId:string){
+        const follow = await this.followModel.findOne({from: uid, to: targetId});
+        if(follow){
+            return {value: true};
+        }
+        else{
+            return {value: false};
+        }
     }
 
     async setUsername(payload:any ,newUsername: string){

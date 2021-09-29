@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Query, Req, UseInterceptors, UploadedFiles, Res, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Query, Req, Put, Delete } from '@nestjs/common';
 import { Request } from 'express';
 import { InventoryService } from './inventory.service';
 import { Inventory, ResponseInventory } from '../models/inventory.model';
@@ -46,6 +46,13 @@ export class InventoryController {
         return search;
         // return await this.imageService.changeInventoryOneImageArrayToBase64(search);
     }
+
+    @Put('/changePic')
+    @UseGuards(JwtAuthGuard)
+    async changePic(@Body() body:any){
+        return await this.inventoryService.changeInventoryPic(body.id, body.pictures);
+    }
+
 
     @Post()
     @UseGuards(JwtAuthGuard)

@@ -50,7 +50,7 @@ export class InventoryService {
     // }
 
     async deleteInventoryById(uid: string, id:string){
-        let user:User = await this.userModel.findOne({_id: uid});
+        const user:User = await this.userModel.findOne({_id: uid});
         if(!user.inventories.includes(id)){
             return {message: "It's not your thing"};
         }
@@ -63,7 +63,7 @@ export class InventoryService {
         return {value: true};
     }
     
-    async newInv(payload: any, thing: Inventory): Promise<{value: boolean}>{
+    async newInv(payload: any, thing: Inventory): Promise<{id: string}>{
         let user = await this.userModel.findOne({_id: payload.uid})
         let newThing = new this.inventoryModel({
             username: user.username,
@@ -79,7 +79,12 @@ export class InventoryService {
                 console.log(`Already push in ${payload.uid}`);
             })
         })
-        return {value: true};
+        return {id: newThing._id.toString()};
+    }
+
+    async changeInventoryPic(id: string, pictures: string[]){
+        await this.inventoryModel.updateOne({_id: id}, {$set: {pictures: pictures}});
+        return {value : true};
     }
 
     async searchInventory(query: string){
