@@ -113,8 +113,13 @@ export class TradeService {
 
     async lockRequestAndInventory(requestId: string){
         const request:Request = await this.requestModel.findOne({_id: requestId});
+        const inventory1: Inventory = await this.inventoryModel.findOne({_id: request.inventoryId1});
+        const inventory2: Inventory = await this.inventoryModel.findOne({_id: request.inventoryId2});
         if(!request){
             return {message: "Can't find this request"};
+        }
+        if(inventory1.lock === 1 || inventory2.lock === 1){
+            return {message: "Inventory has been locked"};
         }
         await this.requestModel.updateOne({_id: requestId}, {$set: {state: 1}});
         await this.lockInventory(request.inventoryId1);
