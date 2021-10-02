@@ -67,7 +67,6 @@ export class InventoryService {
         let user = await this.userModel.findOne({_id: payload.uid})
         let newThing = new this.inventoryModel({
             username: user.username,
-            userProfilePic: user.profilePic,
             owner: payload.uid,
             lock: 0,
             timeStamp: new Date(),

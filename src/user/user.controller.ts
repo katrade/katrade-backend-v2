@@ -41,6 +41,13 @@ export class UserController {
         return this.userService.sendEmail(data.Email, data.Name);
     }
 
+    @Get('/profilePic')
+    @UseGuards(JwtAuthGuard)
+    async profilePic(@Query('id') userId:string){
+        const user: User = await this.userService.sBid(userId);
+        return {profilePic: user.profilePic};
+    }
+
     @Put('/info')
     @UseGuards(JwtAuthGuard)
     async info(@Req() req:Request, @Body() data: any){

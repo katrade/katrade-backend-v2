@@ -4,7 +4,6 @@ export const inventorySchema = new mongoose.Schema({
     owner: String, //เป็นไอดีของเจ้าของสิ่งของนี้
     name: String,
     username: String,
-    userProfilePic: String,
     detail: String,
     timeStamp: Date,
     lock: Number,
@@ -44,7 +43,6 @@ export interface Inventory {
     _id: string;
     owner: string;
     username: string;
-    userProfilePic: string;
     lock: number;
     name: string;
     detail: string;
