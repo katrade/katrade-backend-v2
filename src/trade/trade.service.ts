@@ -35,7 +35,7 @@ export class TradeService {
                 return {message: "mai chai kong user2"}
             }
         }
-        const oldRequest: Request = await this.requestModel.findOne({inventoryId1: request.sourceInventoryId.toString(), inventoryId2: request.targetInventoryId.toString()});
+        const oldRequest: Request = await this.requestModel.findOne({sourceInventoryId: request.sourceInventoryId.toString(), targetInventoryId: request.targetInventoryId.toString()});
         if(oldRequest){
             return {message: "Request pai leaw"};
         }
