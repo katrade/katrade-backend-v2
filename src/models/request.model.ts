@@ -7,16 +7,22 @@ export type RequestDocument = Request & Document;
 @Schema()
 export class Request{
     @Prop()
-    userId1: string;
+    sourceUserId: string;
 
     @Prop()
-    userId2: string;
+    targetUserId: string;
 
     @Prop()
-    inventoryId1: string;
+    sourceInventoryId: string;
 
     @Prop()
-    inventoryId2: string;
+    targetInventoryId: string;
+
+    @Prop()
+    sourceUserConfirm: number;
+
+    @Prop()
+    targetUserConfirm: number;
 
     @Prop()
     state: number;
@@ -27,8 +33,8 @@ export class Request{
 
 export interface RequestToClient{
     requestId: string;
-    inventory1: Inventory;
-    inventory2: Inventory;
+    sourceInventory: Inventory;
+    targetInventory: Inventory;
     timeStamp: string;
 }
 
