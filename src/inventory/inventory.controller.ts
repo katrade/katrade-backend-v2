@@ -3,9 +3,6 @@ import { Request } from 'express';
 import { InventoryService } from './inventory.service';
 import { Inventory, ResponseInventory } from '../models/inventory.model';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { UserService } from 'src/user/user.service';
-import { ImageService } from 'src/image/image.service';
 
 @Controller('inventory')
 export class InventoryController {
