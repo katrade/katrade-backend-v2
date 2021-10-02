@@ -37,7 +37,7 @@ export class TradeService {
         }
         const oldRequest: Request = await this.requestModel.findOne({sourceInventoryId: request.sourceInventoryId.toString(), targetInventoryId: request.targetInventoryId.toString()});
         if(oldRequest){
-            return {message: "Request pai leaw"};
+            return {value: false};
         }
         const newRequest: Request = {
             sourceUserId: uid,
