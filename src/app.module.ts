@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 // import { MailModule } from './mail/mail.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { ChatGateway } from './chat.gateway';
 
 require('dotenv').config();
 
@@ -43,6 +44,6 @@ require('dotenv').config();
     AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,ChatGateway],
 })
 export class AppModule {}
