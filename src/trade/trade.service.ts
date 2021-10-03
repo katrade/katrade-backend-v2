@@ -155,6 +155,16 @@ export class TradeService {
         }
     }
 
+    async cancelLockRequest(requestId: string){
+        const request: Request = await this.requestModel.findOne({_id: requestId});
+        if(request.state !== 2){
+            return {value: false}
+        }
+        await this.inventoryModel.updateOne({_id: request.sourceInventoryId}, {$set: {lock: 0}});
+        await this.inventoryModel.updateOne({_id: request.targetInventoryId}, {$set: {lock: 0}});
+        return await this.cancelRequest(requestId);
+    }
+
     async AcceptRequest(requestId: string){
         const request: Request = await this.requestModel.findOne({_id: requestId});
         if(!request){
