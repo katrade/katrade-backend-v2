@@ -37,7 +37,7 @@ export class InventoryService {
     }
 
     async getUserInventory(userId: string){
-        let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId, lock:0});
+        let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
         return allUserInventory;
     }
 
