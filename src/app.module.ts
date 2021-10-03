@@ -44,6 +44,6 @@ require('dotenv').config();
     AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [ChatGateway],
 })
 export class AppModule {}

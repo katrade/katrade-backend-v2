@@ -1,15 +1,10 @@
-import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { MessageBody,SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 
 
-@WebSocketGateway(8888, {cors:true})
-export class ChatGateway {  
+@WebSocketGateway({cors:true})
+export class ChatGateway{  
     @WebSocketServer()
     server;
-
-    @SubscribeMessage('connection')
-        handleConnect():void{
-            console.log('OK CONNECTION COMPLETE')
-        }
 
     @SubscribeMessage('message')
         handleMessage(@MessageBody() message: { room: string, message: string}):void{
@@ -35,5 +30,4 @@ export class ChatGateway {
             console.log('LEAVEROOM :' + room)
             //this.server.emit('leaveroom', room);
         }
-
 }
