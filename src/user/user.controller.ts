@@ -103,6 +103,12 @@ export class UserController {
         return await this.userService.getFollow(req.user.uid);
     }
 
+    @Get('/getFollowById')
+    @UseGuards(JwtAuthGuard)
+    async getFollowById(@Query('id') userId: string){
+        return await this.userService.getFollow(userId);
+    }
+
     @Get('/getUserFromIdArray')
     @UseGuards(JwtAuthGuard)
     async getUserFromIdArray(@Body('data') idArray: string[]){
