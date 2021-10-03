@@ -103,6 +103,12 @@ export class UserController {
         return await this.userService.getFollow(req.user.uid);
     }
 
+    @Get('/getUserFromIdArray')
+    @UseGuards(JwtAuthGuard)
+    async getUserFromIdArray(@Body('data') idArray: string[]){
+        return await this.userService.getUserFromIdArray(idArray);
+    }
+
     @Post('/updateProfilePic')
     @UseGuards(JwtAuthGuard)
     // @UseInterceptors(FileInterceptor('file'))

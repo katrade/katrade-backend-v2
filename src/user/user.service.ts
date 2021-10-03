@@ -204,6 +204,10 @@ export class UserService {
         return {message: "missing information"};
     }
 
+    async getUserFromIdArray(idArray: string[]){
+        return await this.userModel.find({_id: {$in : idArray}});
+    }
+
     async sendEmail(email: string, name: string){
         const token = Math.floor(1000 + Math.random() * 9000).toString();
         // create user in db
