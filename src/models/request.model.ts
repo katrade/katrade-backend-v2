@@ -36,6 +36,7 @@ export interface RequestToClient{
     sourceInventory: Inventory;
     targetInventory: Inventory;
     ownerInventoryId: string;
+    state: number;
     timeStamp: string;
 }
 

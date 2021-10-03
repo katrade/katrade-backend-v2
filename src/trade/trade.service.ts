@@ -72,6 +72,7 @@ export class TradeService {
                 sourceInventory: i1,
                 targetInventory: i2,
                 ownerInventoryId: i2._id,
+                state: request[i].state,
                 timeStamp: new Date(request[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
         }
@@ -89,6 +90,7 @@ export class TradeService {
                 sourceInventory: i1,
                 targetInventory: i2,
                 ownerInventoryId: i1._id,
+                state: request[i].state,
                 timeStamp: new Date(request[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
         }
@@ -181,6 +183,7 @@ export class TradeService {
                 sourceInventory: inventory1,
                 targetInventory: inventory2,
                 ownerInventoryId: tmp,
+                state: requestArray[i].state,
                 timeStamp: new Date(requestArray[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
         }
