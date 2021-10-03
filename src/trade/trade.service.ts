@@ -163,7 +163,7 @@ export class TradeService {
     }
 
     async GetUserProgess(uid: string){
-        const requestArray = await this.requestModel.find({$or: [{sourceUserId: uid}, {targetUserId: uid}], state : 1});
+        const requestArray = await this.requestModel.find({$or: [{sourceUserId: uid}, {targetUserId: uid}], state : {$in: [1, 2]}});
         console.log(requestArray);
         let result: RequestToClient[] = [];
         for(let i = 0; i < requestArray.length; i++){
