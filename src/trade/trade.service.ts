@@ -71,6 +71,7 @@ export class TradeService {
                 requestId: request[i]._id.toString(),
                 sourceInventory: i1,
                 targetInventory: i2,
+                ownerInventoryId: i2._id,
                 timeStamp: new Date(request[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
         }
@@ -87,6 +88,7 @@ export class TradeService {
                 requestId: request[i]._id.toString(),
                 sourceInventory: i1,
                 targetInventory: i2,
+                ownerInventoryId: i1._id,
                 timeStamp: new Date(request[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
         }
@@ -161,16 +163,24 @@ export class TradeService {
     }
 
     async GetUserProgess(uid: string){
-        let requestArray = await this.requestModel.find({$or: [{sourceUserId: uid}, {targetUserId: uid}], state : 1});
+        const requestArray = await this.requestModel.find({$or: [{sourceUserId: uid}, {targetUserId: uid}], state : 1});
         console.log(requestArray);
         let result: RequestToClient[] = [];
         for(let i = 0; i < requestArray.length; i++){
             let inventory1: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].sourceInventoryId});
             let inventory2: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].targetInventoryId});
+            let tmp : string;
+            if(inventory1.owner === uid){
+                tmp = inventory1._id;
+            }
+            else{
+                tmp = inventory2._id;
+            }
             result.push({
                 requestId: requestArray[i]._id.toString(),
                 sourceInventory: inventory1,
                 targetInventory: inventory2,
+                ownerInventoryId: tmp,
                 timeStamp: new Date(requestArray[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
         }
