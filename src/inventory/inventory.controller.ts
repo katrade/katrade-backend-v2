@@ -38,8 +38,8 @@ export class InventoryController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/search')
-    async search(@Query('query') query:string){
-        let search:Inventory[] = await this.inventoryService.searchInventory(query);
+    async search(@Req() req,@Query('query') query:string){
+        let search:Inventory[] = await this.inventoryService.searchInventory(req.user.uid, query);
         return search;
         // return await this.imageService.changeInventoryOneImageArrayToBase64(search);
     }

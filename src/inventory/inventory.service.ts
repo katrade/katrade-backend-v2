@@ -87,8 +87,8 @@ export class InventoryService {
         return {value : true};
     }
 
-    async searchInventory(query: string){
-        const list:Inventory[] = await this.inventoryModel.find({lock: 0});
+    async searchInventory(uid: string, query: string){
+        const list:Inventory[] = await this.inventoryModel.find({_id: {$ne: uid},lock: 0});
         const options = {
             includeScore: true,
             threshold: 0.2,
