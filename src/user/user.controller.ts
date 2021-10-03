@@ -141,8 +141,8 @@ export class UserController {
 
     @Patch('/lockRequest')
     @UseGuards(JwtAuthGuard)
-    async lockRequest(@Body('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
-        return await this.tradeService.lockRequestAndInventory(requestId);
+    async lockRequest(@Body('id') requestId: string, @Body('inventoryId') inventoryId: string ): Promise<{value: boolean} | {message: string}>{
+        return await this.tradeService.lockRequestAndInventory(requestId, inventoryId);
     }
 
     @Patch('/acceptRequest')

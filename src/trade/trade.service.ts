@@ -29,10 +29,16 @@ export class TradeService {
             if(inventory1.owner !== uid){
                 return {message: "mai chai kong user1"}
             }
+            else if(inventory1.lock === 1){
+                return {message: "sourceInventory lock"}
+            }
         }
         if(inventory2){
             if(inventory2.owner !== request.targetUserId.toString()){
                 return {message: "mai chai kong user2"}
+            }
+            else if(inventory2.lock === 1){
+                return {message: "targetInventory lock"}
             }
         }
         const oldRequest: Request = await this.requestModel.findOne({sourceInventoryId: request.sourceInventoryId.toString(), targetInventoryId: request.targetInventoryId.toString()});
@@ -110,27 +116,39 @@ export class TradeService {
         return await this.requestModel.find({$or: [{sourceInventoryId: inventoryId1}, {targetInventoryId: inventoryId1},{sourceInventoryId: inventoryId2}, {targetInventoryId: inventoryId2}]})
     }
 
-    async lockRequestAndInventory(requestId: string){
+    async lockRequestAndInventory(requestId: string, inventoryId: string){
         const request:Request = await this.requestModel.findOne({_id: requestId});
-        const inventory1: Inventory = await this.inventoryModel.findOne({_id: request.sourceInventoryId});
-        const inventory2: Inventory = await this.inventoryModel.findOne({_id: request.targetInventoryId});
+        const sourceInventory: Inventory = await this.inventoryModel.findOne({_id: request.sourceInventoryId});
+        const targetInventory: Inventory = await this.inventoryModel.findOne({_id: request.targetInventoryId});
         if(!request){
             return {message: "Can't find this request"};
         }
-        if(inventory1.lock === 1 || inventory2.lock === 1){
+        else if(sourceInventory.lock === 1 || targetInventory.lock === 1){
             return {message: "Inventory has been locked"};
         }
-        await this.requestModel.updateOne({_id: requestId}, {$set: {state: 2}});
-        await this.lockInventory(request.sourceInventoryId);
-        await this.lockInventory(request.targetInventoryId);
-        const requests = await this.findRequestByInventory2Id(request.sourceInventoryId, request.targetInventoryId);
-        for(let i = 0; i < requests.length; i++) {
-            if(requests[i].sourceInventoryId === request.sourceInventoryId && requests[i].targetInventoryId === request.targetInventoryId){
-                continue;
-            }
-            await this.cancelRequest(requests[i]._id);
+        if(request.sourceInventoryId === inventoryId.toString()){
+            await this.requestModel.updateOne({_id: requestId}, {$set: {sourceUserConfirm: 1}});
         }
-        return {value: true};
+        else if(request.targetInventoryId === inventoryId.toString()){
+            await this.requestModel.updateOne({_id: requestId}, {$set: {targetUserConfirm: 1}});
+        }
+        const request2:Request = await this.requestModel.findOne({_id: requestId});
+        if(request2.sourceUserConfirm === 1 && request2.targetUserConfirm === 1){
+            await this.requestModel.updateOne({_id: requestId}, {$set: {state: 2}});
+            await this.lockInventory(request2.sourceInventoryId);
+            await this.lockInventory(request2.targetInventoryId);
+            const requests = await this.findRequestByInventory2Id(request2.sourceInventoryId, request2.targetInventoryId);
+            for(let i = 0; i < requests.length; i++) {
+                if(requests[i].sourceInventoryId === request2.sourceInventoryId && requests[i].targetInventoryId === request2.targetInventoryId){
+                    continue;
+                }
+                await this.cancelRequest(requests[i]._id);
+            }
+            return {message: "lock"};
+        }
+        else{
+            return {message: "update userConfirm"};
+        }
     }
 
     async AcceptRequest(requestId: string){
