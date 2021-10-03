@@ -43,7 +43,7 @@ require('dotenv').config();
     CategoryModule,
     AuthModule
   ],
-  controllers: [],
-  providers: [ChatGateway],
+  controllers: [AppController],
+  providers: [AppService, ChatGateway],
 })
 export class AppModule {}
