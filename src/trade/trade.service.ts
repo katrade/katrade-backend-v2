@@ -121,7 +121,7 @@ export class TradeService {
     }
 
     async lockRequestAndInventory(requestId: string, inventoryId: string){
-        const request:Request = await this.requestModel.findOne({_id: requestId});
+        let request:Request = await this.requestModel.findOne({_id: requestId});
         const sourceInventory: Inventory = await this.inventoryModel.findOne({_id: request.sourceInventoryId});
         const targetInventory: Inventory = await this.inventoryModel.findOne({_id: request.targetInventoryId});
         if(!request){
@@ -132,18 +132,19 @@ export class TradeService {
         }
         if(request.sourceInventoryId === inventoryId.toString()){
             await this.requestModel.updateOne({_id: requestId}, {$set: {sourceUserConfirm: 1}});
+            request.sourceUserConfirm = 1;
         }
         else if(request.targetInventoryId === inventoryId.toString()){
             await this.requestModel.updateOne({_id: requestId}, {$set: {targetUserConfirm: 1}});
+            request.targetUserConfirm = 1;
         }
-        const request2:Request = await this.requestModel.findOne({_id: requestId});
-        if(request2.sourceUserConfirm === 1 && request2.targetUserConfirm === 1){
+        if(request.sourceUserConfirm === 1 && request.targetUserConfirm === 1){
             await this.requestModel.updateOne({_id: requestId}, {$set: {state: 2}});
-            await this.lockInventory(request2.sourceInventoryId);
-            await this.lockInventory(request2.targetInventoryId);
-            const requests = await this.findRequestByInventory2Id(request2.sourceInventoryId, request2.targetInventoryId);
+            await this.lockInventory(request.sourceInventoryId);
+            await this.lockInventory(request.targetInventoryId);
+            const requests = await this.findRequestByInventory2Id(request.sourceInventoryId, request.targetInventoryId);
             for(let i = 0; i < requests.length; i++) {
-                if(requests[i].sourceInventoryId === request2.sourceInventoryId && requests[i].targetInventoryId === request2.targetInventoryId){
+                if(requests[i].sourceInventoryId === request.sourceInventoryId && requests[i].targetInventoryId === request.targetInventoryId){
                     continue;
                 }
                 await this.cancelRequest(requests[i]._id);
