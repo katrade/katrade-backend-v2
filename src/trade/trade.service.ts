@@ -150,7 +150,8 @@ export class TradeService {
             await this.requestModel.updateOne({_id: requestId}, {$set: {targetUserConfirm: 1}});
             request.targetUserConfirm = 1;
         }
-        if(request.sourceUserConfirm === 1 && request.targetUserConfirm === 1){
+        const request2 = await this.requestModel.findOne({_id: requestId});
+        if(request2.sourceUserConfirm === 1 && request2.targetUserConfirm === 1){
             await this.requestModel.updateOne({_id: requestId}, {$set: {state: 2}});
             await this.lockInventory(request.sourceInventoryId);
             await this.lockInventory(request.targetInventoryId);
