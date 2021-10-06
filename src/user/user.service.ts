@@ -90,6 +90,19 @@ export class UserService {
         return {message: m};
     }
 
+    async generateResetPasswordToken(email:string){
+        const payload = {
+            resetPasswordEmail: email
+        }
+        return await this.jwtService.sign(payload);
+    }
+
+    async resetPassword(email: string, newPassword: string){
+        const hashPassword: string = await bcrypt.hash(newPassword, parseInt(process.env.salt));
+        await this.userModel.updateOne({email: email}, {password: hashPassword});
+        return {value: true};
+    }
+
     async resendVerifyEmailLink(user: User){
         if(user.verifyEmail === 1){
             return {message : "already verify"}

@@ -4,13 +4,14 @@ import { JwtService } from '@nestjs/jwt';
 import { Image } from 'src/models/image.model';
 import { compare } from 'bcrypt';
 import { ImageService } from 'src/image/image.service';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
-        private readonly imageService: ImageService,
+        private readonly mailService: MailService
     ){}
 
     async googleLG(req: any){
@@ -41,6 +42,16 @@ export class AuthService {
         //     user.profilePic = `data:image/jpeg;base64,${profilePic.image.toString('base64')}`;
         // }
         return user;
+    }
+
+    async sendResetPasswordEmail(email: string){
+        const user = await this.userService.findAny({email: email});
+        if(!user){
+            return {message: "Can't find user"};
+        }
+        const token:string = await this.userService.generateResetPasswordToken(user.email);
+        await this.mailService.sendResetPasswordEmail(user, token);
+        return {value: true};
     }
 
     async login(user: any){

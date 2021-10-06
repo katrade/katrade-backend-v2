@@ -12,6 +12,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RefreshTokenService } from './refreshToken.service';
 import { VerifyEmailStrategy } from './strategies/verifyEmail.straregy';
 import { ImageModule } from 'src/image/image.module';
+import { MailService } from 'src/mail/mail.service';
+import { ResetPasswordStrategy } from './strategies/resetPassword.strategy';
 require('dotenv').config();
 
 @Module({
@@ -26,6 +28,6 @@ require('dotenv').config();
     ImageModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, RefreshTokenService, VerifyEmailStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, RefreshTokenService, VerifyEmailStrategy, MailService, ResetPasswordStrategy],
 })
 export class AuthModule {}
