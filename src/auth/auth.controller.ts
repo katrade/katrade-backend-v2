@@ -1,4 +1,4 @@
-import { Get, Controller, Post, UseGuards, Req, Res, Body, Query } from '@nestjs/common';
+import { Get, Controller, Post, UseGuards, Req, Res, Body, Query, Patch } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -7,6 +7,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserService } from 'src/user/user.service';
 import { User } from '../models/user.model';
 import { VerifyEmailGuard } from './guards/verifyEmail.guard';
+import { ResetPasswordGuard } from './guards/resetPassword.guard';
 require('dotenv').config();
 
 @Controller('auth')
@@ -19,6 +20,17 @@ export class AuthController {
     @Post('/signup')
     async craeteUser(@Body() data: User): Promise<any>{
         return this.userService.craete_new_user(data);
+    }
+
+    @Patch('/resetPassword')
+    @UseGuards(ResetPasswordGuard)
+    async resetPassword(@Req() req, @Body('password') password: string){
+        return this.userService.resetPassword(req.user.resetPasswordEmail, password);
+    }
+
+    @Post('/sendResetPasswordEmail')
+    async sendResetPasswordEmail(@Body('email') email: string){
+        return this.authService.sendResetPasswordEmail(email);
     }
 
     @Get('/google')
