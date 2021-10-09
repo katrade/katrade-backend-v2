@@ -85,18 +85,6 @@ export class TradeService {
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.inventoryModel.findOne({_id: request[i].sourceInventoryId});
             let i2:Inventory = await this.inventoryModel.findOne({_id: request[i].targetInventoryId});
-            if(request[i].targetUserConfirm === 1 && request[i].sourceUserConfirm === 1 && request[i].state === 1){
-                await this.requestModel.updateOne({_id: request[i]._id}, {$set: {state: 2}});
-                await this.lockInventory(request[i].sourceInventoryId);
-                await this.lockInventory(request[i].targetInventoryId);
-                const requests = await this.findRequestByInventory2Id(request[i].sourceInventoryId, request[i].targetInventoryId);
-                for(let j = 0; j < requests.length; j++) {
-                    if(requests[j].sourceInventoryId === request[i].sourceInventoryId && requests[j].targetInventoryId === request[i].targetInventoryId){
-                        continue;
-                    }
-                    await this.cancelRequest(requests[i]._id);
-                }
-            }
             result.push({
                 requestId: request[i]._id.toString(),
                 sourceInventory: i1,
@@ -195,6 +183,18 @@ export class TradeService {
         for(let i = 0; i < requestArray.length; i++){
             let inventory1: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].sourceInventoryId});
             let inventory2: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].targetInventoryId});
+            // if(requestArray[i].targetUserConfirm === 1 && requestArray[i].sourceUserConfirm === 1 && requestArray[i].state === 1){
+            //     await this.requestModel.updateOne({_id: requestArray[i]._id}, {$set: {state: 2}});
+            //     await this.lockInventory(requestArray[i].sourceInventoryId);
+            //     await this.lockInventory(requestArray[i].targetInventoryId);
+            //     const requests = await this.findRequestByInventory2Id(requestArray[i].sourceInventoryId, requestArray[i].targetInventoryId);
+            //     for(let j = 0; j < requests.length; j++) {
+            //         if(requests[j].sourceInventoryId === requestArray[i].sourceInventoryId && requests[j].targetInventoryId === requestArray[i].targetInventoryId){
+            //             continue;
+            //         }
+            //         await this.cancelRequest(requests[i]._id);
+            //     }
+            // }
             let tmp : string;
             if(inventory1.owner === uid){
                 tmp = inventory1._id;
