@@ -17,6 +17,12 @@ export class InventoryController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Get('getInventoryByUserId')
+    async findByUserId(@Query('id') uid:string): Promise<Inventory[] | any>{
+        return await this.inventoryService.findInventoryByUserId(uid);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get('getUserInventory')
     async getUserInventory(@Req() req): Promise<Inventory[]>{
         let uid:string = req.user.uid;
