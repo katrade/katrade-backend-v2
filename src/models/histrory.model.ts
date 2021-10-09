@@ -6,10 +6,10 @@ export type HistoryDocument = History & Document;
 @Schema()
 export class History{
     @Prop()
-    sourceUser: string
+    sourceUserId: string
 
     @Prop()
-    targetUser: string
+    targetUserId: string
 
     @Prop()
     sourceUsername: string

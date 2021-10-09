@@ -225,9 +225,6 @@ export class TradeService {
         }
         const sourceInventory: Inventory = await this.inventoryModel.findOne({_id: request.sourceInventoryId});
         const targetInventory: Inventory = await this.inventoryModel.findOne({_id: request.targetInventoryId});
-        if(sourceInventory.lock === 1 || targetInventory.lock === 1){
-            return {message: "Inventory has been locked"};
-        }
         if(request.sourceUserId === uid){
             await this.requestModel.updateOne({_id: requestId}, {$set: {sourceUserFinish: 1}});
             request.sourceUserConfirm = 1;
@@ -262,5 +259,9 @@ export class TradeService {
         else{
             return {message: "update userFinish"};
         }
+    }
+
+    async findHistory(uid: string){
+        return await this.historyModel.find({$or: [{sourceUserId: uid}, {targetUserId: uid}]});
     }
 }
