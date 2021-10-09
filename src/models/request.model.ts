@@ -46,4 +46,14 @@ export interface RequestToClient{
     timeStamp: string;
 }
 
+export interface ProgessToClient{
+    requestId: string;
+    sourceInventory: Inventory;
+    targetInventory: Inventory;
+    ownerInventoryId: string;
+    userFinish: number;
+    state: number;
+    timeStamp: string;
+}
+
 export const RequestSchema = SchemaFactory.createForClass(Request);
