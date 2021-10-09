@@ -4,11 +4,13 @@ import { Model } from 'mongoose';
 import { User } from 'src/models/user.model';
 import { Inventory } from 'src/models/inventory.model';
 import { RequestDocument, Request, RequestToClient } from 'src/models/request.model';
+import { HistoryDocument, History } from 'src/models/histrory.model';
 
 
 @Injectable()
 export class TradeService {
     constructor(
+        @InjectModel('History') private readonly historyModel: Model<HistoryDocument>,
         @InjectModel('Request') private readonly requestModel: Model<RequestDocument>,
         @InjectModel('User') private readonly userModel: Model<User>,
         @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>
@@ -53,6 +55,8 @@ export class TradeService {
             targetInventoryId: request.targetInventoryId.toString(),
             sourceUserConfirm: 0,
             targetUserConfirm: 0,
+            sourceUserFinish: 0,
+            targetUserFinish: 0,
             state: 0
         }
         let result: any = await this.requestModel.create(newRequest); 
@@ -212,5 +216,51 @@ export class TradeService {
             });
         }
         return result;
+    }
+
+    async finishTrade(uid: string, requestId: string){
+        let request:Request = await this.requestModel.findOne({_id: requestId});
+        if(!request){
+            return {message: "Can't find this request"};
+        }
+        const sourceInventory: Inventory = await this.inventoryModel.findOne({_id: request.sourceInventoryId});
+        const targetInventory: Inventory = await this.inventoryModel.findOne({_id: request.targetInventoryId});
+        if(sourceInventory.lock === 1 || targetInventory.lock === 1){
+            return {message: "Inventory has been locked"};
+        }
+        if(request.sourceUserId === uid){
+            await this.requestModel.updateOne({_id: requestId}, {$set: {sourceUserFinish: 1}});
+            request.sourceUserConfirm = 1;
+        }
+        else if(request.targetUserId === uid){
+            await this.requestModel.updateOne({_id: requestId}, {$set: {targetUserFinish: 1}});
+            request.targetUserConfirm = 1;
+        }
+        const request2 = await this.requestModel.findOne({_id: requestId});
+        if(request2.sourceUserFinish === 1 && request2.targetUserFinish === 1){
+            const sourceUser = await this.userModel.findOne({_id: request2.sourceUserId});
+            const targetUser = await this.userModel.findOne({_id: request2.targetUserId});
+            const newHistory = new this.historyModel({
+                sourceUserId: sourceUser._id,
+                targetUserId: targetUser._id,
+                sourceUsername: sourceUser.username,
+                targetUsername: targetUser.username,
+                sourceInventoryName: sourceInventory.name,
+                targetInventoryName: targetInventory.name,
+                sourceInventoryPicture: sourceInventory.pictures[0],
+                targetInventoryPicture: targetInventory.pictures[0],
+                timeStamp: new Date()
+            })
+            await newHistory.save();
+            await this.cancelRequest(requestId);
+            await this.userModel.updateOne({_id: sourceUser._id}, {$pull: {inventories: [sourceInventory._id]}});
+            await this.inventoryModel.deleteOne({_id: sourceInventory._id});
+            await this.userModel.updateOne({_id: targetUser._id}, {$pull: {inventories: [targetInventory._id]}});
+            await this.inventoryModel.deleteOne({_id: targetInventory._id});
+            return {message: "Finish Trade"};
+        }
+        else{
+            return {message: "update userFinish"};
+        }
     }
 }
