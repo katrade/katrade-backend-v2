@@ -25,6 +25,12 @@ export class Request{
     targetUserConfirm: number;
 
     @Prop()
+    sourceUserFinish: number;
+
+    @Prop()
+    targetUserFinish: number;
+
+    @Prop()
     state: number;
 
     @Prop()

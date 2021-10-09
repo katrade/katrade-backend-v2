@@ -175,6 +175,18 @@ export class UserController {
         return await this.tradeService.cancelLockRequest(requestId);
     }
 
+    @Post('/finishTrade')
+    @UseGuards(JwtAuthGuard)
+    async finishTrade(@Req() req, @Body('requestId') requestId: string){
+        return await this.tradeService.finishTrade(req.user.uid, requestId);
+    }
+
+    @Get('/getUserHistory')
+    @UseGuards(JwtAuthGuard)
+    async getUserHistory(@Req() req){
+        return await this.tradeService.findHistory(req.user.uid);
+    }
+
     // @Get('/getFile')
     // @UseGuards(JwtAuthGuard)
     // async getFile(@Req() req){
