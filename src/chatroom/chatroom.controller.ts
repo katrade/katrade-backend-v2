@@ -18,7 +18,7 @@ export class ChatroomController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/getroom')
-    async getroom(@Body("roomid") roomid: string){
+    async getroom(@Query("roomid") roomid: string){
         return await this.chatroomService.getroom(roomid);
     }
 
