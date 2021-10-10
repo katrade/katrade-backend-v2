@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/models/user.model';
 import { Inventory } from 'src/models/inventory.model';
-import { RequestDocument, Request, RequestToClient } from 'src/models/request.model';
+import { RequestDocument, Request, RequestToClient, ProgessToClient } from 'src/models/request.model';
 import { HistoryDocument, History } from 'src/models/histrory.model';
 
 
@@ -182,11 +182,11 @@ export class TradeService {
 
     async GetUserProgess(uid: string){
         const requestArray = await this.requestModel.find({$or: [{sourceUserId: uid}, {targetUserId: uid}], state : {$in: [1, 2]}});
-        console.log(requestArray);
-        let result: RequestToClient[] = [];
+        let uf:number;
+        let result: ProgessToClient[] = [];
         for(let i = 0; i < requestArray.length; i++){
-            let inventory1: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].sourceInventoryId});
-            let inventory2: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].targetInventoryId});
+            let sourceInventory: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].sourceInventoryId});
+            let targetInventory: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].targetInventoryId});
             // if(requestArray[i].targetUserConfirm === 1 && requestArray[i].sourceUserConfirm === 1 && requestArray[i].state === 1){
             //     await this.requestModel.updateOne({_id: requestArray[i]._id}, {$set: {state: 2}});
             //     await this.lockInventory(requestArray[i].sourceInventoryId);
@@ -200,16 +200,19 @@ export class TradeService {
             //     }
             // }
             let tmp : string;
-            if(inventory1.owner === uid){
-                tmp = inventory1._id;
+            if(sourceInventory.owner === uid){
+                tmp = sourceInventory._id;
+                uf = requestArray[i].sourceUserFinish === 1 ? 1 : 0;
             }
             else{
-                tmp = inventory2._id;
+                tmp = targetInventory._id;
+                uf = requestArray[i].targetUserFinish === 1 ? 1 : 0;
             }
             result.push({
                 requestId: requestArray[i]._id.toString(),
-                sourceInventory: inventory1,
-                targetInventory: inventory2,
+                sourceInventory: sourceInventory,
+                targetInventory: targetInventory,
+                userFinish: uf,
                 ownerInventoryId: tmp,
                 state: requestArray[i].state,
                 timeStamp: new Date(requestArray[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
