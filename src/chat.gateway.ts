@@ -25,9 +25,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
                 content: messageContent.content.message, 
                 timeStamp: messageContent.content.timeStamp
             }
-            await this.chatroomService.addMessage(body);
             console.log('SEND DATA SUCCESS : ' + messageContent.content.message);
             this.server.to(messageContent.room).emit('message', messageContent);
+            await this.chatroomService.addMessage(body);
         }
     
     // @SubscribeMessage('read_success')
@@ -38,9 +38,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
     @SubscribeMessage('joinroom')
         async JoinRoom(client: Socket, room: string){
-            //await this.chatroomService.newroom(room);
             client.join(room)
             console.log('JOINROOM :' + room)
+            await this.chatroomService.newroom(room);
             //this.server.emit('joinroom', room);
         }
     
