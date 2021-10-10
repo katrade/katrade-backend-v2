@@ -38,8 +38,14 @@ export class InventoryController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/getAllInventory')
-    getAll(){
-        return this.inventoryService.getAll();
+    async getAll(){
+        return await this.inventoryService.getAll();
+    }
+
+    @Get('/getMatchInventory')
+    @UseGuards(JwtAuthGuard)
+    async getMatchInventory(@Req() req, @Query('id') inventoryId: string){
+        return await this.inventoryService.getMatchInventory(req.user.uid, inventoryId);
     }
 
     @UseGuards(JwtAuthGuard)
