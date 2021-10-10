@@ -2,21 +2,29 @@ import * as mongoose from 'mongoose';
 
 export const chatroomSchema = new mongoose.Schema({
     roomId: String, //เลขห้อง
-    messages: [{
-        Message: {
+    messages: [
+        {
             sender: String,
-            type: String,
+            content_type: String,
             content: String,
-            timeStamp: Date,
+            timeStamp: String,
         }
-    }],
+    ],
 })
+
+export interface MessageForData {
+    roomId: string;
+    sender: string;
+    content_type: string;
+    content: string;
+    timeStamp: string;
+}
 
 export interface Message {
     sender: string;
-    type: string;
+    content_type: string;
     content: string;
-    timeStamp: Date;
+    timeStamp: string;
 }
 
 export interface Chatroom {
