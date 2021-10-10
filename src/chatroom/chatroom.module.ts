@@ -14,6 +14,7 @@ import { ChatroomService } from "./chatroom.service";
         ])
     ],
     controllers: [ChatroomController],
-    providers: [ChatroomService]
+    providers: [ChatroomService],
+    exports : [ChatroomService]
 })
 export class ChatroomModule {}

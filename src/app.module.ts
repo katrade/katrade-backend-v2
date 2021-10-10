@@ -11,6 +11,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ChatGateway } from './chat.gateway';
 import { ChatroomModule } from './chatroom/chatroom.module';
+import { ChatroomService } from './chatroom/chatroom.service';
 
 require('dotenv').config();
 

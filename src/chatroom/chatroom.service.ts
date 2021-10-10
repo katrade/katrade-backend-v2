@@ -28,7 +28,7 @@ export class ChatroomService {
     }
 
     async addMessage(body: MessageForData){
-        let Room = await this.chatroomModel.findOne({roomId: body.roomId});
+        // let Room = await this.chatroomModel.findOne({roomId: body.roomId});
         console.log(body)
         let message : Message = {sender: body.sender, content_type: body.content_type, content: body.content, timeStamp: body.timeStamp}
         await this.chatroomModel.updateOne({roomId: body.roomId}, {$push: {messages: [message]}}).then(() => {

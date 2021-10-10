@@ -7,7 +7,7 @@ export const chatroomSchema = new mongoose.Schema({
             sender: String,
             content_type: String,
             content: String,
-            timeStamp: String,
+            timeStamp: Date,
         }
     ],
 })
@@ -17,14 +17,14 @@ export interface MessageForData {
     sender: string;
     content_type: string;
     content: string;
-    timeStamp: string;
+    timeStamp: Date;
 }
 
 export interface Message {
     sender: string;
     content_type: string;
     content: string;
-    timeStamp: string;
+    timeStamp: Date;
 }
 
 export interface Chatroom {
