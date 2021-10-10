@@ -22,17 +22,23 @@ export class ChatroomService {
             roomId: roomid,
             messages: []
         })
-        await this.chatroomModel.create(newRoom).then(async () => {
-            console.log('Create Newroom Success');
-        })
+        let checkroom = await this.chatroomModel.findOne({roomId: roomid});
+        if (!checkroom) {
+            await this.chatroomModel.create(newRoom).then(async () => {
+                console.log('Create Newroom Success');
+            })
+        }
     }
 
     async addMessage(body: MessageForData){
         // let Room = await this.chatroomModel.findOne({roomId: body.roomId});
         console.log(body)
         let message : Message = {sender: body.sender, content_type: body.content_type, content: body.content, timeStamp: body.timeStamp}
-        await this.chatroomModel.updateOne({roomId: body.roomId}, {$push: {messages: [message]}}).then(() => {
-            console.log('New message Succes');                                                                                           
-        })
+        let checkroom = await this.chatroomModel.findOne({roomId: body.roomId});
+        if (!checkroom) {
+            await this.chatroomModel.updateOne({roomId: body.roomId}, {$push: {messages: [message]}}).then(() => {
+                console.log('New message Succes');                                                                                           
+            })
+        }
     }
 }

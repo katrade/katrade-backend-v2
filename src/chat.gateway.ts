@@ -37,7 +37,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 
     @SubscribeMessage('joinroom')
-    async JoinRoom(client: Socket, room: string){
+        async JoinRoom(client: Socket, room: string){
             await this.chatroomService.newroom(room);
             client.join(room)
             console.log('JOINROOM :' + room)
