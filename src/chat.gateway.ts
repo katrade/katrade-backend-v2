@@ -1,8 +1,9 @@
 import { Logger } from "@nestjs/common";
 import { ConnectedSocket, MessageBody,OnGatewayConnection,OnGatewayDisconnect,SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { Socket } from "socket.io";
 
 
-@WebSocketGateway(8081, {cors: {methods: ["GET", "POST"]}})
+@WebSocketGateway({cors: true})
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{  
     @WebSocketServer()
     server;
@@ -10,32 +11,33 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
     private logger = new Logger('ChatGateway');
 
     @SubscribeMessage('message')
-        handleMessage(@MessageBody() message: { room: string, message: string}):void{
-            this.server.to(message.room).emit('message', message.message);
+        handleMessage(client: Socket,message: { room: string, content: {author: string, message: string}}):void{
+            console.log('SEND DATA SUCCESS : ' + message.content.message);
+            this.server.to(message.room).emit('message', message);
         }
     
-    @SubscribeMessage('read_success')
-        handleRead(@MessageBody() message: { room: string, message: string}):void{
-            this.server.to(message.room).emit('read_success', message.message);
-        }
+    // @SubscribeMessage('read_success')
+    //     handleRead(client: Socket,message: { room: string, message: string}):void{
+    //         this.server.in(message.room).emit('read_success', message.message);
+    //     }
 
 
     @SubscribeMessage('joinroom')
-        handleJoinRoom(@MessageBody() room: string):void{
-            this.server.join(room)
+    public JoinRoom(client: Socket, room: string):void{
+            client.join(room)
             console.log('JOINROOM :' + room)
             //this.server.emit('joinroom', room);
         }
     
-    @SubscribeMessage('leaveroom')
-        handleLeaveRoom(@MessageBody() room: string):void{
-            this.server.leave(room)
-            console.log('LEAVEROOM :' + room)
-            //this.server.emit('leaveroom', room);
-        }
+    // @SubscribeMessage('leaveroom')
+    //     handleLeaveRoom(client: Socket, @MessageBody() room: string):void{
+    //         client.leave(room)
+    //         console.log('LEAVEROOM :' + room)
+    //         //this.server.emit('leaveroom', room);
+    //     }
     
     handleConnection() {
-        console.log('CONNECT SUCCESS');
+        console.log('client connect');
     }
 
     handleDisconnect() {
