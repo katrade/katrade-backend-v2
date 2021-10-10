@@ -17,13 +17,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
     private logger = new Logger('ChatGateway');
 
     @SubscribeMessage('message')
-        async handleMessage(client: Socket,messageContent: { room: string, content: {sender: string, senderID: string, type: string, content: string, timeStamp: Date}}){
+        async handleMessage(client: Socket,messageContent: { room: string, content: {sender: string, senderID: string, content_type: string, content: string, timeStamp: Date}}){
             console.log('SEND DATA SUCCESS : ' + messageContent.content.content);
             this.server.to(messageContent.room).emit('message', messageContent);
             let body : MessageForData = {
                 roomId : messageContent.room, 
                 sender: messageContent.content.sender, 
-                content_type: messageContent.content.type, 
+                content_type: messageContent.content.content_type, 
                 content: messageContent.content.content, 
                 timeStamp: messageContent.content.timeStamp
             }
