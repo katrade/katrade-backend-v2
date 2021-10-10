@@ -21,4 +21,19 @@ export class MailService {
         })
         return "Please check your email to verify";
     }
+
+    async sendResetPasswordEmail(user: any, token:any){
+        console.log(`send email to ${user.email}`);
+        const url:string = `${process.env.client}/resetPassword/?token=${token}`
+        await this.mailerService.sendMail({
+            to: user.email,
+            from: process.env.Email,
+            subject: 'Reset your katrade account password',
+            template: './resetPassword',
+            context: {
+              name: user.firstname,
+              url,
+            },
+        })
+    }
 }

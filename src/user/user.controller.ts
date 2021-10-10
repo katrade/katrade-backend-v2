@@ -103,6 +103,18 @@ export class UserController {
         return await this.userService.getFollow(req.user.uid);
     }
 
+    @Get('/getFollowById')
+    @UseGuards(JwtAuthGuard)
+    async getFollowById(@Query('id') userId: string){
+        return await this.userService.getFollow(userId);
+    }
+
+    @Post('/getUserFromIdArray')
+    @UseGuards(JwtAuthGuard)
+    async getUserFromIdArray(@Body('data') idArray: string[]){
+        return await this.userService.getUserFromIdArray(idArray);
+    }
+
     @Post('/updateProfilePic')
     @UseGuards(JwtAuthGuard)
     // @UseInterceptors(FileInterceptor('file'))
@@ -139,12 +151,6 @@ export class UserController {
         return await this.tradeService.cancelRequest(requestId);
     }
 
-    @Patch('/lockRequest')
-    @UseGuards(JwtAuthGuard)
-    async lockRequest(@Body('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
-        return await this.tradeService.lockRequestAndInventory(requestId);
-    }
-
     @Patch('/acceptRequest')
     @UseGuards(JwtAuthGuard)
     async acceptRequest(@Body('id') requestId: string ): Promise<{value: boolean} | {message: string}>{
@@ -155,6 +161,30 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     async getUserProgess(@Req() req){
         return await this.tradeService.GetUserProgess(req.user.uid);
+    }
+
+    @Patch('/lockRequest')
+    @UseGuards(JwtAuthGuard)
+    async lockRequest(@Body('id') requestId: string, @Body('inventoryId') inventoryId: string ): Promise<{value: boolean} | {message: string}>{
+        return await this.tradeService.lockRequestAndInventory(requestId, inventoryId);
+    }
+
+    @Patch('/cancelLockRequest')
+    @UseGuards(JwtAuthGuard)
+    async cancelLockRequest(@Body('id') requestId:string){
+        return await this.tradeService.cancelLockRequest(requestId);
+    }
+
+    @Post('/finishTrade')
+    @UseGuards(JwtAuthGuard)
+    async finishTrade(@Req() req, @Body('requestId') requestId: string){
+        return await this.tradeService.finishTrade(req.user.uid, requestId);
+    }
+
+    @Get('/getUserHistory')
+    @UseGuards(JwtAuthGuard)
+    async getUserHistory(@Req() req){
+        return await this.tradeService.findHistory(req.user.uid);
     }
 
     // @Get('/getFile')

@@ -17,6 +17,12 @@ export class InventoryController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Get('getInventoryByUserId')
+    async findByUserId(@Query('id') uid:string): Promise<Inventory[] | any>{
+        return await this.inventoryService.findInventoryByUserId(uid);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get('getUserInventory')
     async getUserInventory(@Req() req): Promise<Inventory[]>{
         let uid:string = req.user.uid;
@@ -38,8 +44,8 @@ export class InventoryController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/search')
-    async search(@Query('query') query:string){
-        let search:Inventory[] = await this.inventoryService.searchInventory(query);
+    async search(@Req() req,@Query('query') query:string){
+        let search:Inventory[] = await this.inventoryService.searchInventory(req.user.uid, query);
         return search;
         // return await this.imageService.changeInventoryOneImageArrayToBase64(search);
     }

@@ -25,6 +25,12 @@ export class Request{
     targetUserConfirm: number;
 
     @Prop()
+    sourceUserFinish: number;
+
+    @Prop()
+    targetUserFinish: number;
+
+    @Prop()
     state: number;
 
     @Prop()
@@ -35,6 +41,8 @@ export interface RequestToClient{
     requestId: string;
     sourceInventory: Inventory;
     targetInventory: Inventory;
+    ownerInventoryId: string;
+    state: number;
     timeStamp: string;
 }
 

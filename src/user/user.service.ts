@@ -90,6 +90,19 @@ export class UserService {
         return {message: m};
     }
 
+    async generateResetPasswordToken(email:string){
+        const payload = {
+            resetPasswordEmail: email
+        }
+        return await this.jwtService.sign(payload);
+    }
+
+    async resetPassword(email: string, newPassword: string){
+        const hashPassword: string = await bcrypt.hash(newPassword, parseInt(process.env.salt));
+        await this.userModel.updateOne({email: email}, {password: hashPassword});
+        return {value: true};
+    }
+
     async resendVerifyEmailLink(user: User){
         if(user.verifyEmail === 1){
             return {message : "already verify"}
@@ -149,11 +162,14 @@ export class UserService {
         const fg = await this.followModel.find({from: uid});
         let follower: string[] = [];
         let following: string[] = [];
-        for(let i = 0; i < fr.length; i++) {
-            follower.push(fr[i].from)
-        }
-        for(let i = 0; i < fg.length; i++) {
-            following.push(fg[i].to)
+        const n: number = fr > fg ? fr.length: fg.length;
+        for(let i = 0; i < n; i++) {
+            if(i < fr.length){
+                follower.push(fr[i].from)
+            }
+            if(i < fg.length){
+                following.push(fg[i].to)
+            }
         }
         return {follower: follower, following: following};
     }
@@ -199,6 +215,10 @@ export class UserService {
             return {value: true}
         }
         return {message: "missing information"};
+    }
+
+    async getUserFromIdArray(idArray: string[]){
+        return await this.userModel.find({_id: {$in : idArray}});
     }
 
     async sendEmail(email: string, name: string){

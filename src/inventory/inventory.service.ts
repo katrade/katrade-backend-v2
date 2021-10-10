@@ -20,6 +20,10 @@ export class InventoryService {
         // return this.imageService.changeInventoryOneImageArrayToBase64(inventoryArray);
     }
 
+    async findInventoryByUserId(uid: string){
+        return await this.inventoryModel.find({owner: uid, lock: 0});
+    }
+
     async findInventoryById(inventoryId: string): Promise<Inventory | any>{
         let i:Inventory = await this.inventoryModel.findOne({_id: inventoryId});
         // let user:User = await this.userModel.findOne({_id: i.owner});
@@ -37,7 +41,7 @@ export class InventoryService {
     }
 
     async getUserInventory(userId: string){
-        let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId, lock:0});
+        let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
         return allUserInventory;
     }
 
@@ -87,8 +91,8 @@ export class InventoryService {
         return {value : true};
     }
 
-    async searchInventory(query: string){
-        const list:Inventory[] = await this.inventoryModel.find({lock: 0});
+    async searchInventory(uid: string, query: string){
+        const list:Inventory[] = await this.inventoryModel.find({owner: {$ne: uid},lock: 0});
         const options = {
             includeScore: true,
             threshold: 0.2,
