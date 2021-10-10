@@ -35,7 +35,7 @@ export class ChatroomService {
         console.log(body)
         let message : Message = {sender: body.sender, content_type: body.content_type, content: body.content, timeStamp: body.timeStamp}
         let checkroom = await this.chatroomModel.findOne({roomId: body.roomId});
-        if (!checkroom) {
+        if (checkroom) {
             await this.chatroomModel.updateOne({roomId: body.roomId}, {$push: {messages: [message]}}).then(() => {
                 console.log('New message Succes');                                                                                           
             })

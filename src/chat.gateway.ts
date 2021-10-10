@@ -18,6 +18,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
     @SubscribeMessage('message')
         async handleMessage(client: Socket,messageContent: { room: string, content: {author: string, authorID: string, type: string, message: string, timeStamp: Date}}){
+            console.log('SEND DATA SUCCESS : ' + messageContent.content.message);
+            this.server.to(messageContent.room).emit('message', messageContent);
             let body : MessageForData = {
                 roomId : messageContent.room, 
                 sender: messageContent.content.author, 
@@ -25,8 +27,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
                 content: messageContent.content.message, 
                 timeStamp: messageContent.content.timeStamp
             }
-            console.log('SEND DATA SUCCESS : ' + messageContent.content.message);
-            this.server.to(messageContent.room).emit('message', messageContent);
             await this.chatroomService.addMessage(body);
         }
     
