@@ -2,8 +2,6 @@ import * as mongoose from 'mongoose';
 
 export const chatroomSchema = new mongoose.Schema({
     roomId: String, //เลขห้อง
-    user1: String,
-    user2: String,
     messages: [{
         Message: {
             sender: String,
@@ -23,7 +21,5 @@ export interface Message {
 
 export interface Chatroom {
     roomId: string;
-    user1: string;
-    user2: string;
     messages: Message[];
 }

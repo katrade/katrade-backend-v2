@@ -11,9 +11,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
     private logger = new Logger('ChatGateway');
 
     @SubscribeMessage('message')
-        handleMessage(client: Socket,message: { room: string, content: {author: string, message: string}}):void{
-            console.log('SEND DATA SUCCESS : ' + message.content.message);
-            this.server.to(message.room).emit('message', message);
+        handleMessage(client: Socket,messageContent: { room: string, content: {author: string, type: string, message: string, timeStamp: Date}}):void{
+            console.log('SEND DATA SUCCESS : ' + messageContent.content.message);
+            this.server.to(messageContent.room).emit('message', messageContent);
         }
     
     // @SubscribeMessage('read_success')
