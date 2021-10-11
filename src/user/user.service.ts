@@ -44,6 +44,17 @@ export class UserService {
         return user as User;
     }
 
+    async changePassword(uid:string, newPassword: string){
+        const user:User = await this.userModel.findOne({_id: uid});
+        const c: boolean = await bcrypt.compare(user.password, newPassword);
+        if(!c){
+            return {value: false}
+        }
+        const hashPassword:string = await bcrypt.hash(newPassword, parseInt(process.env.salt));
+        await this.userModel.updateOne({_id: uid}, {$set: {password: hashPassword}});
+        return {value: true};
+    }
+
     private async updateUserAndGenerrateTokenAndSendEmailVerify(user:User, data:User): Promise<string>{
         await this.userModel.updateOne({_id: user._id}, {$set: data});
         let payload: any = {
