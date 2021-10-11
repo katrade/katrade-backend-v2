@@ -19,7 +19,7 @@ export class ContactlistService {
     async newcontactlist(userid : string){
         let contactroom = new this.contactlistModel ({
             userId : userid,
-            contactusers : []
+            userContacts : []
         })
         let userroom = await this.contactlistModel.findOne({userId: userid});
         if (!userroom) {
@@ -31,9 +31,9 @@ export class ContactlistService {
 
     async addcontactlist(body : Contactuser){
         let userroom = await this.contactlistModel.findOne({userId: body.userId});
-        if (!(userroom.contactusers.includes(body.contactuser))) {
+        if (!(userroom.userContacts.includes(body.userContacts))) {
             console.log('Have this user in contactlist');
-            await this.contactlistModel.updateOne({userId: body.userId}, {$push: {contactusers: [body.contactuser]}}).then(() => {
+            await this.contactlistModel.updateOne({userId: body.userId}, {$push: {userContacts: [body.userContacts]}}).then(() => {
                 console.log('Success Add new Contact');
             })
         }

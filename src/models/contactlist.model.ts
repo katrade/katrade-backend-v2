@@ -2,15 +2,15 @@ import * as mongoose from 'mongoose';
 
 export const contactlistSchema = new mongoose.Schema ({
     userId : String,
-    contactusers : []
+    userContacts : []
 })
 
 export interface Contactuser {
     userId : string;
-    contactuser : string;
+    userContacts : string;
 }
 
 export interface Contactlist {
     userId : string;
-    contactusers : string[];
+    userContacts : string[];
 }
