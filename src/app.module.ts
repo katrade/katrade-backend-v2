@@ -12,6 +12,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { ChatGateway } from './chat.gateway';
 import { ChatroomModule } from './chatroom/chatroom.module';
 import { ChatroomService } from './chatroom/chatroom.service';
+import { ContactlistModule } from './contactlist/contactlist.module';
 
 require('dotenv').config();
 
@@ -44,7 +45,8 @@ require('dotenv').config();
     InventoryModule,
     CategoryModule,
     AuthModule,
-    ChatroomModule
+    ChatroomModule,
+    ContactlistModule
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway],

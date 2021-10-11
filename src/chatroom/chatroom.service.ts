@@ -24,7 +24,7 @@ export class ChatroomService {
         })
         let checkroom = await this.chatroomModel.findOne({roomId: roomid});
         if (!checkroom) {
-            await this.chatroomModel.create(newRoom).then(async () => {
+            await this.chatroomModel.create(newRoom).then(() => {
                 console.log('Create Newroom Success');
             })
         }
