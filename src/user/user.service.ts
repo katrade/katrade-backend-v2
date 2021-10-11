@@ -46,7 +46,7 @@ export class UserService {
 
     async changePassword(uid:string, currentPassword:string, newPassword: string){
         const user:User = await this.userModel.findOne({_id: uid});
-        const c: boolean = await bcrypt.compare(user.password, currentPassword);
+        const c: boolean = await bcrypt.compare(currentPassword, user.password);
         if(!c){
             return {value: false}
         }
