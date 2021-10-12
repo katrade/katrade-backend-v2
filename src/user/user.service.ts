@@ -8,6 +8,7 @@ import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
 import { InventoryService } from 'src/inventory/inventory.service';
 import { FollowDocument, Follow } from 'src/models/follow.model';
+import { request } from 'http';
 require('dotenv').config();
 
 @Injectable()
@@ -78,7 +79,9 @@ export class UserService {
             profilePic: "",
             verifyEmail: 0,
             favourite:[],
-            inventories:[]
+            inventories:[],
+            requestInbox:[],
+            userContacts:[]
         });
         let m: any = "";
         let checkEmail:User = await this.userModel.findOne({email: data.email});
@@ -240,4 +243,23 @@ export class UserService {
         // await this.mailService.send_confirm({email: email, name: name}, token);
         return "finsih";
     }  
+
+    async updateuserContact(userId:string, contactId:string){
+        let userroom = await this.userModel.findOne({_id: userId});
+        if (!(userroom.userContacts.includes(contactId))) {
+            console.log('Have this user in contactlist');
+            await this.userModel.updateOne({_id: userId}, {$push: {userContacts: [contactId]}}).then(() => {
+                console.log('Success Add new Contact');
+            })
+        }
+    }
+    async getuserContact(userId:string){
+        let userroom = await this.userModel.findOne({_id: userId});
+        return userroom.userContacts;
+    }
+
+    async getUserFromId(userId:string){
+        let userroom = await this.userModel.findOne({_id: userId});
+        return userroom;
+    }
 }

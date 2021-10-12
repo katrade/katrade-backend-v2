@@ -7,6 +7,7 @@ import { Post } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TradeService } from 'src/trade/trade.service';
 import { InventoryService } from 'src/inventory/inventory.service';
+import { get } from 'http';
 
 @Controller('user')
 export class UserController {
@@ -185,6 +186,24 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     async getUserHistory(@Req() req){
         return await this.tradeService.findHistory(req.user.uid);
+    }
+
+    @Put('/newUserContact')
+    @UseGuards(JwtAuthGuard)
+    async newUserContact(@Body() body : {userId: string, contactId: string}){
+        await this.userService.updateuserContact(body.userId, body.contactId);
+    }
+
+    @Get('/getUserContact')
+    @UseGuards(JwtAuthGuard)
+    async GetUserContact(@Query('userId') userId:string){
+        return await this.userService.getuserContact(userId);
+    }
+
+    @Get('/getUserFromId')
+    @UseGuards(JwtAuthGuard)
+    async GetUserFromId(@Query('userId') userId:string){
+        return await this.userService.getUserFromId(userId);
     }
 
     // @Get('/getFile')
