@@ -13,8 +13,18 @@ export const userSchema = new mongoose.Schema({
 	favourite: [],
 	inventories: [],
 	requestInbox: [],
-	userContacts: []
+	userContacts: [
+		{
+			userIdContact: String,
+			userNameContact: String,
+		}
+	]
 });
+
+export interface userContactdata {
+	userIdContact : string;
+	userNameContact: string;
+}
 
 export interface User {
     _id: string;
@@ -30,5 +40,5 @@ export interface User {
 	favourite: string[],
 	inventories: string[];
 	requestInbox: string[];
-	userContacts: string[];
+	userContacts: userContactdata[];
 }

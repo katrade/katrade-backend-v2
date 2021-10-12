@@ -246,7 +246,12 @@ export class UserService {
 
     async updateuserContact(userId:string, contactId:string){
         let userroom = await this.userModel.findOne({_id: userId});
-        if (!(userroom.userContacts.includes(contactId))) {
+        let contactusr = await this.userModel.findOne({_id: contactId});
+        let contactman = {
+            userIdContact : contactId,
+            userNameContact : contactusr.username
+        }
+        if (!(userroom.userContacts.includes(contactman))) {
             console.log('Have this user in contactlist');
             await this.userModel.updateOne({_id: userId}, {$push: {userContacts: [contactId]}}).then(() => {
                 console.log('Success Add new Contact');
