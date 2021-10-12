@@ -256,7 +256,7 @@ export class UserService {
             }
         }
         console.log('Have this user in contactlist');
-        await this.userModel.updateOne({_id: userId}, {$push: {userContacts: [contactman]}}).then(() => {
+        await this.userModel.updateOne({_id: userId}, {$push: {userContacts: {$each: [contactman], $position: 0}}}).then(() => {
             console.log('Success Add new Contact');
         })
     }
