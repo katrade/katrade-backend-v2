@@ -206,6 +206,12 @@ export class UserController {
         return await this.userService.getUserFromId(userId);
     }
 
+    @Get('/getDealing')
+    @UseGuards(JwtAuthGuard)
+    async getDealing(@Req() req, @Query('id') userId:string){
+        return await this.tradeService.getDealing(req.user.uid, userId);
+    }
+
     // @Get('/getFile')
     // @UseGuards(JwtAuthGuard)
     // async getFile(@Req() req){

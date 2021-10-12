@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/models/user.model';
 import { Inventory } from 'src/models/inventory.model';
-import { RequestDocument, Request, RequestToClient, ProgessToClient } from 'src/models/request.model';
+import { RequestDocument, Request, RequestToClient, ProgessToClient, DealingToClient } from 'src/models/request.model';
 import { HistoryDocument, History } from 'src/models/histrory.model';
 
 
@@ -213,6 +213,35 @@ export class TradeService {
                 sourceInventory: sourceInventory,
                 targetInventory: targetInventory,
                 userFinish: uf,
+                ownerInventoryId: tmp,
+                state: requestArray[i].state,
+                timeStamp: new Date(requestArray[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
+            });
+        }
+        return result;
+    }
+
+    async getDealing(uid: string, id:string){
+        const requestArray = await this.requestModel.find({$or: [{sourceUserId: uid, targetUserId: id}, {sourceUserId: id, targetUserId: uid}], state : {$in: [1, 2]}});
+        let uc:number;
+        let result: DealingToClient[] = [];
+        for(let i = 0; i < requestArray.length; i++){
+            let sourceInventory: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].sourceInventoryId});
+            let targetInventory: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].targetInventoryId});
+            let tmp : string;
+            if(sourceInventory.owner === uid){
+                tmp = sourceInventory._id;
+                uc = requestArray[i].sourceUserConfirm;
+            }
+            else{
+                tmp = targetInventory._id;
+                uc = requestArray[i].targetUserConfirm;
+            }
+            result.push({
+                requestId: requestArray[i]._id.toString(),
+                sourceInventory: sourceInventory,
+                targetInventory: targetInventory,
+                userConfirm: uc,
                 ownerInventoryId: tmp,
                 state: requestArray[i].state,
                 timeStamp: new Date(requestArray[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
