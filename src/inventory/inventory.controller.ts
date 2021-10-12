@@ -62,6 +62,12 @@ export class InventoryController {
         return await this.inventoryService.changeInventoryPic(body.id, body.pictures);
     }
 
+    @Get('/getMatch')
+    @UseGuards(JwtAuthGuard)
+    async getMatch(@Req() req){
+        return await this.inventoryService.getMatch(req.user.uid);
+    }
+
 
     @Post()
     @UseGuards(JwtAuthGuard)
