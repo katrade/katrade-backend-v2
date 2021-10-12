@@ -45,6 +45,23 @@ export class InventoryService {
         return allUserInventory;
     }
 
+    async getMatchInventory(uid:string, inventoryId:string){
+        const inventory = await this.inventoryModel.findOne({_id: inventoryId});
+        if(!inventory){
+            return {message: "Can't find inventory"};
+        }
+        const userInventory = await this.inventoryModel.find({owner: uid});
+        let result: Inventory[] = [];
+        for(let i = 0; i < userInventory.length; i++){
+            for(let j = 0; j < inventory.require.length; j++){
+                if(userInventory[i].category.childCategoryEn === inventory.require[j].reqCat.childCategoryEn){
+                    result.push(userInventory[i]);
+                }
+            }
+        }
+        return result;
+    }
+
     // async getUserInventory(userId: string){
     //     let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
     //     if(!allUserInventory[0]){

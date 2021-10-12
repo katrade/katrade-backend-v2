@@ -1,4 +1,4 @@
-import { Get, Controller, Post, UseGuards, Req, Res, Body, Query, Patch } from '@nestjs/common';
+import { Get, Controller, Post, UseGuards, Req, Res, Body, Query, Patch, Put } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -50,6 +50,12 @@ export class AuthController {
         res.json({DaveTheHornyDuck: tmp.accessToken, verifyEmail: tmp.verifyEmail, setUsername: tmp.setUsername});
         // res.cookie(process.env.SCK, tmp.accessToken, {httpOnly: true});
         // return {value: tmp.verifyEmail, DaveTheHornyDuck: tmp.accessToken};
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('/changePassword')
+    async changePassword(@Req() req, @Body('newPassword') newPassword: string, @Body('currentPassword') currentPassword:string){
+        return await this.userService.changePassword(req.user.uid, currentPassword, newPassword);
     }
 
     @UseGuards(JwtAuthGuard)
