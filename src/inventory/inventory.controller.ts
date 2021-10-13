@@ -62,6 +62,17 @@ export class InventoryController {
         return await this.inventoryService.changeInventoryPic(body.id, body.pictures);
     }
 
+    @Put('/changeDetail')
+    @UseGuards(JwtAuthGuard)
+    async changeDetail(@Body() body:any){
+        await this.inventoryService.changeInventoryDetail(body.id, body.detail);
+    }
+
+    @Put('/changeRequire')
+    @UseGuards(JwtAuthGuard)
+    async changeRequire(@Body() body:any){
+        await this.inventoryService.changeInventoryRequire(body.id, body.require);
+    }
 
     @Post()
     @UseGuards(JwtAuthGuard)
