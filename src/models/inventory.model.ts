@@ -63,3 +63,8 @@ export interface ResponseInventory {
     pictures: Buffer[];
     require: RequireAray[];
 }
+
+export interface MatchInventory{
+    match: Inventory,
+    matchWith: Inventory[]
+}

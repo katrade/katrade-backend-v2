@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Inventory, RequireAray, ResponseInventory } from 'src/models/inventory.model';
+import { Inventory, RequireAray, ResponseInventory, MatchInventory } from 'src/models/inventory.model';
 import { User } from '../models/user.model';
 import { TradeService } from 'src/trade/trade.service';
 const Fuse = require('fuse.js');
@@ -54,12 +54,38 @@ export class InventoryService {
         let result: Inventory[] = [];
         for(let i = 0; i < userInventory.length; i++){
             for(let j = 0; j < inventory.require.length; j++){
-                if(userInventory[i].category.childCategoryEn === inventory.require[j].reqCat.childCategoryEn){
+                if(userInventory[i].category.childCategoryEn === inventory.require[j].reqCat.childCategoryEn && userInventory[i].category.parentCategoryEn === inventory.require[j].reqCat.parentCategoryEn){
                     result.push(userInventory[i]);
                 }
             }
         }
         return result;
+    }
+
+    async getMatch(uid:string){
+        const userInventory: Inventory[] = await this.inventoryModel.find({owner: uid});
+        if(!userInventory){
+            return { message: "This user doesn't has inventory" };
+        }
+        let requireCategory = [];
+        for(let i = 0; i < userInventory.length; i++){
+            for(let j = 0; j < userInventory[i].require.length; j ++) {
+                requireCategory.push(userInventory[i].require[j].reqCat)
+            }
+        }
+        const match: Inventory[] = await this.inventoryModel.find({owner: {$nin: [uid]} ,category: {$in: requireCategory}});
+        let res:MatchInventory[] = [];
+        for(let i = 0; i < match.length; i++){
+            requireCategory = [];
+            for(let j = 0; j < match[i].require.length; j ++) {
+                requireCategory.push(match[i].require[j].reqCat)
+            }
+            let tmp: Inventory[] = await this.inventoryModel.find({owner: uid, category: {$in: requireCategory}});
+            if(tmp.length > 0){
+                res.push({match: match[i], matchWith: tmp});
+            }
+        }
+        return res;
     }
 
     // async getUserInventory(userId: string){

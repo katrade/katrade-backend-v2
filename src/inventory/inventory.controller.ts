@@ -73,6 +73,12 @@ export class InventoryController {
     async changeRequire(@Body() body:any){
         await this.inventoryService.changeInventoryRequire(body.id, body.require);
     }
+    @Get('/getMatch')
+    @UseGuards(JwtAuthGuard)
+    async getMatch(@Req() req){
+        return await this.inventoryService.getMatch(req.user.uid);
+    }
+
 
     @Post()
     @UseGuards(JwtAuthGuard)
