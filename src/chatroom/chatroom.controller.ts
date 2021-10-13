@@ -27,4 +27,10 @@ export class ChatroomController {
     async newmessage(@Body() body: MessageForData){
         await this.chatroomService.addMessage(body);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/getLastMessage')
+    async getLastMessage(@Query('roomid') roomid: string){
+        return await this.chatroomService.LastMessage(roomid);
+    }
 }
