@@ -1,0 +1,93 @@
+body {
+    background-color: #dddddd;
+    margin: 30px 0;
+    font-family: Sans-serif;
+}
+
+body p {
+    color: rgb(86, 86, 86);
+}
+
+.block1 {
+    background-color: #2bc986;
+    width: 500px;
+    height: 200px;
+    border-radius: 10px 10px 0 0;
+}
+
+.block11 {
+    height: 10px;
+}
+
+.block12 {
+    text-align: center;
+    font-size: 22px;
+    color: white;
+}
+
+.logo {
+    width: 150px;
+    margin: 10px;
+}
+
+.block2 {
+    background-color: #ffffff;
+    width: 500px;
+    height: 100px;
+}
+
+.block21 {
+    padding: 20px 20px 10px 20px;
+    text-align: center;
+}
+
+.block3 {
+    background-color: #ffffff;
+    width: 500px;
+    height: 100px;
+}
+
+.block31 :hover {
+    background-color: #2bc986;
+}
+
+.button a {
+    background-color: #2bc986;
+    border-style: solid;
+    border-color: #2bc986;
+    border-radius: 10px;
+    height: 48px;
+    width: 190px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 15px;
+}
+
+.button :hover {
+    background-color: #1ea76e;
+    border-color: #1ea76e;
+}
+
+.block4 {
+    background-color: #ffffff;
+    width: 500px;
+    height: 100px;
+    text-align: center;
+}
+
+.block5 {
+    background-color: #ffffff;
+    width: 500px;
+    height: 100px;
+    border-radius: 0 0 10px 10px;
+    padding: 30px 0 10px 30px;
+    text-align: left;
+}
+
+@media screen and (max-width:520px){
+    .block1 {
+        width: 100%;
+    }
+}

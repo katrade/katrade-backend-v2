@@ -236,12 +236,8 @@ export class UserService {
     }
 
     async sendEmail(email: string, name: string){
-        const token = Math.floor(1000 + Math.random() * 9000).toString();
-        // create user in db
-        // ...
-        // send confirmation mail
-        // await this.mailService.send_confirm({email: email, name: name}, token);
-        return "finsih";
+        await this.mailService.sendVerifyEmail({token: "", email: email, name: name});
+        return {message: "finish"};
     }  
 
     async updateuserContact(userId:string, contactId:string){
