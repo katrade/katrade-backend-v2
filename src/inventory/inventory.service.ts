@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Inventory, ResponseInventory, MatchInventory } from 'src/models/inventory.model';
+import { Inventory, RequireAray, ResponseInventory, MatchInventory } from 'src/models/inventory.model';
 import { User } from '../models/user.model';
 import { TradeService } from 'src/trade/trade.service';
 const Fuse = require('fuse.js');
@@ -131,6 +131,16 @@ export class InventoryService {
 
     async changeInventoryPic(id: string, pictures: string[]){
         await this.inventoryModel.updateOne({_id: id}, {$set: {pictures: pictures}});
+        return {value : true};
+    }
+
+    async changeInventoryDetail(id:string, detail:string){
+        await this.inventoryModel.updateOne({_id:id}, {$set: {detail: detail}});
+        return true;
+    }
+
+    async changeInventoryRequire(id: string, require: RequireAray[]){
+        await this.inventoryModel.updateOne({_id: id}, {$set: {require: require}});
         return {value : true};
     }
 

@@ -240,19 +240,21 @@ export class UserService {
         return {message: "finish"};
     }  
 
-    async updateuserContact(userId:string, contactId:string){
+    async updateuserContact(userId:string, contactId:string, contactName:string){
         let userroom = await this.userModel.findOne({_id: userId});
-        let contactusr = await this.userModel.findOne({_id: contactId});
         let contactman = {
             userIdContact : contactId,
-            userNameContact : contactusr.username
+            userNameContact : contactName
         }
-        if (!(userroom.userContacts.includes(contactman))) {
-            console.log('Have this user in contactlist');
-            await this.userModel.updateOne({_id: userId}, {$push: {userContacts: [contactId]}}).then(() => {
-                console.log('Success Add new Contact');
-            })
+        for(var i=0;i<userroom.userContacts.length;i++){
+            if(userroom.userContacts[i].userIdContact == contactman.userIdContact){
+                return ;
+            }
         }
+        console.log('Have this user in contactlist');
+        await this.userModel.updateOne({_id: userId}, {$push: {userContacts: {$each: [contactman], $position: 0}}}).then(() => {
+            console.log('Success Add new Contact');
+        })
     }
     async getuserContact(userId:string){
         let userroom = await this.userModel.findOne({_id: userId});

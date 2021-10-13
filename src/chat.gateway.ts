@@ -5,7 +5,7 @@ import { ChatroomService } from "./chatroom/chatroom.service";
 import { MessageForData } from "src/models/chatroom.model";
 
 
-@WebSocketGateway({cors: true})
+@WebSocketGateway({cors: {credentials : true}})
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{  
     @WebSocketServer()
     server;
