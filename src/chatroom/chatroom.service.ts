@@ -45,6 +45,9 @@ export class ChatroomService {
     async LastMessage(roomid: string){
         let chatroom = await this.chatroomModel.findOne({roomId: roomid});
         let idx = chatroom.messages.length;
+        if (idx == 0) {
+            return [];
+        }
         let data = chatroom.messages[idx-1];
         return data;
     }
