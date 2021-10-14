@@ -45,7 +45,7 @@ export class ChatroomService {
     async LastMessage(roomid: string){
         let chatroom = await this.chatroomModel.findOne({roomId: roomid});
         if (!chatroom)
-            return [];
+            return true;
         let idx = chatroom.messages.length;
         //console.log(chatroom);
         if (idx == 0) {
