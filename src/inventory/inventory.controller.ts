@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, UseGuards, Query, Req, Put, Delete } from '@nestjs/common';
 import { Request } from 'express';
 import { InventoryService } from './inventory.service';
-import { Inventory, ResponseInventory } from '../models/inventory.model';
+import { Inventory, ResponseInventory, subCat } from '../models/inventory.model';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('inventory')
@@ -77,6 +77,12 @@ export class InventoryController {
     @UseGuards(JwtAuthGuard)
     async getMatch(@Req() req){
         return await this.inventoryService.getMatch(req.user.uid);
+    }
+
+    @Post('/searchByCategory')
+    @UseGuards(JwtAuthGuard)
+    async searchByCategory(@Req() req, @Body() category: subCat){
+        return await this.inventoryService.searchByCategory(req.user.uid, category);
     }
 
 

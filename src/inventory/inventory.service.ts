@@ -144,6 +144,15 @@ export class InventoryService {
         return {value : true};
     }
 
+    async searchByCategory(uid:string ,category: any){
+        if(!category.childCategoryEn){
+            return await this.inventoryModel.find({owner: {$ne: uid}, 'category.parentCategoryEn': category.parentCategoryEn });
+        }
+        else{
+            return await this.inventoryModel.find({owner: {$ne: uid}, 'category.parentCategoryEn': category.parentCategoryEn, 'category.childCategoryEn': category.childCategoryEn });
+        }
+    }
+
     async searchInventory(uid: string, query: string){
         const list:Inventory[] = await this.inventoryModel.find({owner: {$ne: uid},lock: 0});
         const options = {
