@@ -244,7 +244,7 @@ export class UserService {
         return "finsih";
     }  
 
-    async updateuserContact(userId:string, contactId:string, contactName:string){
+    async updateuserContact(userId:string, userName: string, contactId:string, contactName:string){
         let userroom = await this.userModel.findOne({_id: userId});
         let contactman = {
             userIdContact : contactId,
