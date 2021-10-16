@@ -204,8 +204,8 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard)
     @Put('/updateUserContact')
-    async updateUserContact(@Body() userId:string, body:any){
-        await this.userService.updateUserContactAray(userId,body);
+    async updateUserContact(@Body() body : {userId:string, body:any}){
+        await this.userService.updateUserContactAray(body.userId,body.body);
     }
 
     @Get('/getUserFromId')
