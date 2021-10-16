@@ -249,7 +249,6 @@ export class UserService {
         let contactman = {
             userIdContact : contactId,
             userNameContact : contactName,
-            timeStamp : new Date()
         }
         for(var i=0;i<userroom.userContacts.length;i++){
             if(userroom.userContacts[i].userIdContact == contactman.userIdContact){
@@ -267,7 +266,6 @@ export class UserService {
         let contactman = {
             userIdContact : contactId,
             userNameContact : contactroom.username,
-            timeStamp : new Date()
         }
         await this.userModel.updateOne({_id:userId}, {$pull: {userContacts : 
             {
@@ -277,7 +275,7 @@ export class UserService {
         await this.userModel.updateOne({_id:userId}, {$push: {userContacts : 
             {
                 $each : [contactman]
-                ,$sort : {timeStamp : -1}
+                ,$position: 0
             }
             }}).then(() => {
             console.log('Update UserContact OK');

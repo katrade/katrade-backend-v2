@@ -18,7 +18,6 @@ export const userSchema = new mongoose.Schema({
 		{
 			userIdContact: String,
 			userNameContact: String,
-			timeStamp: Date
 		}
 	]
 });
@@ -26,7 +25,6 @@ export const userSchema = new mongoose.Schema({
 export interface userContactdata {
 	userIdContact : string;
 	userNameContact: string;
-	timeStamp: Date;
 }
 
 export interface User {
