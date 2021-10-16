@@ -71,11 +71,16 @@ export class TradeService {
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.inventoryModel.findOne({_id: request[i].sourceInventoryId});
             let i2:Inventory = await this.inventoryModel.findOne({_id: request[i].targetInventoryId});
+            let tmp:string = "target";
+            if(i1.owner === uid){
+                tmp = "source";
+            }
             result.push({
                 requestId: request[i]._id.toString(),
                 sourceInventory: i1,
                 targetInventory: i2,
                 ownerInventoryId: i2._id,
+                userStatus: tmp,
                 state: request[i].state,
                 timeStamp: new Date(request[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
@@ -89,11 +94,16 @@ export class TradeService {
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.inventoryModel.findOne({_id: request[i].sourceInventoryId});
             let i2:Inventory = await this.inventoryModel.findOne({_id: request[i].targetInventoryId});
+            let tmp:string = "target";
+            if(i1.owner === uid){
+                tmp = "source";
+            }
             result.push({
                 requestId: request[i]._id.toString(),
                 sourceInventory: i1,
                 targetInventory: i2,
                 ownerInventoryId: i1._id,
+                userStatus: tmp,
                 state: request[i].state,
                 timeStamp: new Date(request[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
@@ -200,9 +210,11 @@ export class TradeService {
             //     }
             // }
             let tmp : string;
+            let userStatus: string = "target";
             if(sourceInventory.owner === uid){
                 tmp = sourceInventory._id;
                 uf = requestArray[i].sourceUserFinish === 1 ? 1 : 0;
+                userStatus = "source";
             }
             else{
                 tmp = targetInventory._id;
@@ -214,6 +226,7 @@ export class TradeService {
                 targetInventory: targetInventory,
                 userFinish: uf,
                 ownerInventoryId: tmp,
+                userStatus: userStatus,
                 state: requestArray[i].state,
                 timeStamp: new Date(requestArray[i].timeStamp.toString()).toLocaleString("en-US", {timeZone: "Asia/Jakarta"})
             });
