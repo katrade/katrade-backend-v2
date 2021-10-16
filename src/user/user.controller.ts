@@ -191,6 +191,7 @@ export class UserController {
     @Put('/newUserContact')
     @UseGuards(JwtAuthGuard)
     async newUserContact(@Body() body : {userId: string, userName: string, contactId: string, contactName: string}){
+        console.log("USERNAME IS : " + body.userName);
         await this.userService.updateuserContact(body.userId, body.userName, body.contactId, body.contactName);
         await this.userService.updateuserContact(body.contactId, body.contactName, body.userId, body.userName);
     }
@@ -201,11 +202,19 @@ export class UserController {
         return await this.userService.getuserContact(userId);
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Put('/updateUserContact')
+    async updateUserContact(@Body() userId:string, body:any){
+        await this.userService.updateUserContactAray(userId,body);
+    }
+
     @Get('/getUserFromId')
     @UseGuards(JwtAuthGuard)
     async GetUserFromId(@Query('userId') userId:string){
         return await this.userService.getUserFromId(userId);
     }
+
+
 
     // @Get('/getFile')
     // @UseGuards(JwtAuthGuard)

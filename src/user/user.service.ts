@@ -260,6 +260,13 @@ export class UserService {
             console.log('Success Add new Contact');
         })
     }
+
+    async updateUserContactAray(userId:string, body:any){
+        await this.userModel.updateOne({_id:userId}, {$set: {userContacts : body}}).then(() => {
+            console.log('Update UserContact OK');
+        })
+    }
+
     async getuserContact(userId:string){
         let userroom = await this.userModel.findOne({_id: userId});
         return userroom.userContacts;
