@@ -248,7 +248,8 @@ export class UserService {
         let userroom = await this.userModel.findOne({_id: userId});
         let contactman = {
             userIdContact : contactId,
-            userNameContact : contactName
+            userNameContact : contactName,
+            timeStamp : new Date()
         }
         for(var i=0;i<userroom.userContacts.length;i++){
             if(userroom.userContacts[i].userIdContact == contactman.userIdContact){
@@ -261,8 +262,24 @@ export class UserService {
         })
     }
 
-    async updateUserContactAray(userId:string, body:any){
-        await this.userModel.updateOne({_id:userId}, {$set: {userContacts : body}}).then(() => {
+    async updateUserContactAray(userId:string, contactId:any){
+        let contactroom = await this.userModel.findOne({_id: contactId});
+        let contactman = {
+            userIdContact : contactId,
+            userNameContact : contactroom.username,
+            timeStamp : new Date()
+        }
+        await this.userModel.updateOne({_id:userId}, {$pull: {userContacts : 
+            {
+                userIdContact : contactId,
+            }
+            }})
+        await this.userModel.updateOne({_id:userId}, {$push: {userContacts : 
+            {
+                $each : [contactman]
+                ,$sort : {timeStamp : -1}
+            }
+            }}).then(() => {
             console.log('Update UserContact OK');
         })
     }
