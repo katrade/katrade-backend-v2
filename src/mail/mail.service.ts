@@ -31,8 +31,7 @@ export class MailService {
             subject: 'Reset your katrade account password',
             template: './resetPassword',
             context: {
-              name: user.firstname,
-              url,
+              url
             },
         })
     }

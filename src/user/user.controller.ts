@@ -215,7 +215,22 @@ export class UserController {
         return await this.userService.getUserFromId(userId);
     }
 
+<<<<<<< HEAD
 
+=======
+    @Get('/getDealing')
+    @UseGuards(JwtAuthGuard)
+    async getDealing(@Req() req, @Query('id') userId:string){
+        return await this.tradeService.getDealing(req.user.uid, userId);
+    }
+
+    // @Post('/sendMail')
+    // async sendMail(@Body('email') email: string, @Body('name') name: string){
+    //     console.log(email)
+    //     console.log(name)
+    //     return await this.userService.sendEmail(email, name);
+    // }
+>>>>>>> 6d97a8000bd0767100fdb10d8cb96fcc1980bb07
 
     // @Get('/getFile')
     // @UseGuards(JwtAuthGuard)

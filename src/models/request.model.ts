@@ -42,6 +42,7 @@ export interface RequestToClient{
     sourceInventory: Inventory;
     targetInventory: Inventory;
     ownerInventoryId: string;
+    userStatus: string;
     state: number;
     timeStamp: string;
 }
@@ -52,6 +53,17 @@ export interface ProgessToClient{
     targetInventory: Inventory;
     ownerInventoryId: string;
     userFinish: number;
+    userStatus: string;
+    state: number;
+    timeStamp: string;
+}
+
+export interface DealingToClient{
+    requestId: string;
+    sourceInventory: Inventory;
+    targetInventory: Inventory;
+    ownerInventoryId: string;
+    userConfirm: number;
     state: number;
     timeStamp: string;
 }
