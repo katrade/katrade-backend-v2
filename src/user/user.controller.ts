@@ -215,9 +215,6 @@ export class UserController {
         return await this.userService.getUserFromId(userId);
     }
 
-<<<<<<< HEAD
-
-=======
     @Get('/getDealing')
     @UseGuards(JwtAuthGuard)
     async getDealing(@Req() req, @Query('id') userId:string){
@@ -230,7 +227,6 @@ export class UserController {
     //     console.log(name)
     //     return await this.userService.sendEmail(email, name);
     // }
->>>>>>> 6d97a8000bd0767100fdb10d8cb96fcc1980bb07
 
     // @Get('/getFile')
     // @UseGuards(JwtAuthGuard)
