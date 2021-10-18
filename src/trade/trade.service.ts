@@ -71,6 +71,9 @@ export class TradeService {
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.inventoryModel.findOne({_id: request[i].sourceInventoryId});
             let i2:Inventory = await this.inventoryModel.findOne({_id: request[i].targetInventoryId});
+            if(!i1 || !i2){
+                continue;
+            }
             let tmp:string = "target";
             if(i1.owner === uid){
                 tmp = "source";
@@ -94,6 +97,9 @@ export class TradeService {
         for(let i = 0; i < request.length; i++){
             let i1:Inventory = await this.inventoryModel.findOne({_id: request[i].sourceInventoryId});
             let i2:Inventory = await this.inventoryModel.findOne({_id: request[i].targetInventoryId});
+            if(!i1 || !i2){
+                continue;
+            }
             let tmp:string = "target";
             if(i1.owner === uid){
                 tmp = "source";
@@ -209,6 +215,9 @@ export class TradeService {
             //         await this.cancelRequest(requests[i]._id);
             //     }
             // }
+            if(!sourceInventory || !targetInventory){
+                continue;
+            }
             let tmp : string;
             let userStatus: string = "target";
             if(sourceInventory.owner === uid){
@@ -241,6 +250,9 @@ export class TradeService {
         for(let i = 0; i < requestArray.length; i++){
             let sourceInventory: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].sourceInventoryId});
             let targetInventory: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].targetInventoryId});
+            if(!sourceInventory || !targetInventory){
+                continue;
+            }
             let tmp : string;
             if(sourceInventory.owner === uid){
                 tmp = sourceInventory._id;
