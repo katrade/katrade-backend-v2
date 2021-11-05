@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { Favorite } from './favorite.model';
 
 export const inventorySchema = new mongoose.Schema({
     owner: String, //เป็นไอดีของเจ้าของสิ่งของนี้
@@ -14,6 +15,7 @@ export const inventorySchema = new mongoose.Schema({
         childCategoryTh: String
     },
     pictures: [],
+    favourite: [],
     require: [
         {
             reqCat: {
@@ -48,6 +50,7 @@ export interface Inventory {
     detail: string;
     timeStamp: Date,
     category: subCat;
+    favourite: string[];
     pictures: string[];
     require: RequireAray[];
 }
@@ -56,11 +59,13 @@ export interface ResponseInventory {
     _id: string;
     owner: string;
     username: string;
+    lock: number;
     name: string;
     detail: string;
-    timeStamp: Date;
+    timeStamp: Date,
     category: subCat;
-    pictures: Buffer[];
+    pictures: string[];
+    favorite: Favorite[];
     require: RequireAray[];
 }
 

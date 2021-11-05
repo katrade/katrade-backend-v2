@@ -23,7 +23,7 @@ require('dotenv').config();
     }),
     PassportModule.register({defaultStrategy: 'verifyEmailToken'}),
     TradeModule,
-    InventoryModule
+    InventoryModule,
   ],
   controllers: [UserController],
   providers: [UserService, MailService, VerifyEmailStrategy, InventoryService],

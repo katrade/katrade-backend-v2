@@ -6,12 +6,10 @@ import { UserModule } from './user/user.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/auth.module';
-// import { MailModule } from './mail/mail.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ChatGateway } from './chat.gateway';
 import { ChatroomModule } from './chatroom/chatroom.module';
-import { ChatroomService } from './chatroom/chatroom.service';
 import { ContactlistModule } from './contactlist/contactlist.module';
 
 require('dotenv').config();

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Inventory, RequireAray, ResponseInventory, MatchInventory } from 'src/models/inventory.model';
+import { Inventory, RequireAray, MatchInventory, ResponseInventory } from 'src/models/inventory.model';
 import { User } from '../models/user.model';
 import { TradeService } from 'src/trade/trade.service';
 const Fuse = require('fuse.js');
@@ -11,26 +11,29 @@ export class InventoryService {
     constructor(
         @InjectModel('Inventory') private readonly inventoryModel: Model<Inventory>,
         @InjectModel('User') private readonly userModel: Model<User>,
-        private readonly tradeService: TradeService
+        private readonly tradeService: TradeService,
     ){}
 
-    async getInventoryByIdArray(id: string[]){
-        let inventoryArray: Inventory[] = await this.inventoryModel.find({_id: {$in : id}});
-        return inventoryArray;
-        // return this.imageService.changeInventoryOneImageArrayToBase64(inventoryArray);
+    async getInventoryByIdArray(ids: string[], userId: string){
+        let inventories: Inventory[] = []
+        for(let i = 0; i < ids.length; i++){
+            let inventory = await this.inventoryModel.findOne({_id: ids[i]})
+            if(inventory){
+                inventories.push(inventory)
+            }
+            else{
+                await this.userModel.updateOne({_id: userId}, {$pull: {favourite: [ids[i]]}});
+            }
+        }
+        return inventories;
     }
 
     async findInventoryByUserId(uid: string){
         return await this.inventoryModel.find({owner: uid, lock: 0});
     }
 
-    async findInventoryById(inventoryId: string): Promise<Inventory | any>{
-        let i:Inventory = await this.inventoryModel.findOne({_id: inventoryId});
-        // let user:User = await this.userModel.findOne({_id: i.owner});
-        // if(!i){
-        //     return {message: "Can't find this inventory"};
-        // }
-        // i.pictures = await this.imageService.findAndChangeToBase64Array(i.pictures);
+    async findInventoryById(inventoryId: string): Promise<ResponseInventory | any>{
+        const i:Inventory = await this.inventoryModel.findOne({_id: inventoryId});
         return i;
     }
 
@@ -88,25 +91,17 @@ export class InventoryService {
         return res;
     }
 
-    // async getUserInventory(userId: string){
-    //     let allUserInventory:Inventory[] = await this.inventoryModel.find({owner: userId});
-    //     if(!allUserInventory[0]){
-    //         return [];
-    //     }
-    //     return await this.imageService.changeInventoryOneImageArrayToBase64(allUserInventory);
-    // }
-
     async deleteInventoryById(uid: string, id:string){
         const user:User = await this.userModel.findOne({_id: uid});
         if(!user.inventories.includes(id)){
             return {message: "It's not your thing"};
         }
         await this.userModel.updateOne({_id: uid}, {$pull: {inventories: id}});
-        await this.inventoryModel.deleteOne({_id: id});
         const requestArray = await this.tradeService.findRequestByInventoryId(id);
         for(let i = 0; i < requestArray.length; i++) {
             await this.tradeService.cancelRequest(requestArray[i]._id);
         }
+        await this.inventoryModel.deleteOne({_id: id});
         return {value: true};
     }
     
@@ -172,5 +167,15 @@ export class InventoryService {
         }
         const fuse = new Fuse(list, options);
         return await fuse.search(query);
+    }
+
+    async addFavorite(userId: string, inventoryId: string){
+        await this.inventoryModel.updateOne({_id: inventoryId}, {$push: {favourite: [userId]}});
+        return {value: true}
+    }
+
+    async deleteFavorite(userId: string, inventoryId: string){
+        await this.inventoryModel.updateOne({_id: inventoryId}, {$pull: {favourite: userId}});
+        return {value: true}
     }
 }

@@ -146,7 +146,7 @@ export class UserService {
 
     async getFavorite(payload: any):Promise<Inventory[]>{
         const user:User = await this.userModel.findOne({_id: payload.uid});
-        const inventoryArray: Inventory[] = await this.inventoryService.getInventoryByIdArray(user.favourite);
+        const inventoryArray: Inventory[] = await this.inventoryService.getInventoryByIdArray(user.favourite, payload.uid);
         return inventoryArray;
     }
 
@@ -208,19 +208,15 @@ export class UserService {
     }
 
     async pushFavourite(uid:string, inventoryId:string):Promise<{value: boolean} | {message: string}>{
-        if(inventoryId){
-            await this.userModel.updateOne({_id: uid}, {$push: {favourite: [inventoryId.toString()]}});
-            return {value: true};
-        }
-        return {message: "Doesn't has inventoryId"};
+        await this.userModel.updateOne({_id: uid}, {$push: {favourite: [inventoryId.toString()]}});
+        await this.inventoryService.addFavorite(uid, inventoryId);
+        return {value: true};
     }
 
     async pullFavourite(uid:string, inventoryId:string):Promise<{value: boolean} | {message: string}>{
-        if(inventoryId){
-            await this.userModel.updateOne({_id: uid}, {$pull: {favourite: inventoryId.toString()}});
-            return {value: true};
-        }
-        return {message: "Doesn't has inventoryId"};
+        await this.userModel.updateOne({_id: uid}, {$pull: {favourite: inventoryId.toString()}});
+        await this.inventoryService.deleteFavorite(uid, inventoryId);
+        return {value: true};
     }
 
     async updateProfilePic(uid:string, profilePic:string){
@@ -286,5 +282,12 @@ export class UserService {
     async getUserFromId(userId:string){
         let userroom = await this.userModel.findOne({_id: userId});
         return userroom;
+    }
+
+    async forDeleteFav(){
+        let users = await this.userModel.find()
+        for(let i = 0; i < users.length; i++){
+            await this.userModel.updateOne({_id: users[i]._id}, {$set: {favourite: []}})
+        }
     }
 }

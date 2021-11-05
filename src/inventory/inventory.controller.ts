@@ -7,17 +7,17 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @Controller('inventory')
 export class InventoryController {
     constructor(
-        private readonly inventoryService: InventoryService
+        private readonly inventoryService: InventoryService,
     ) {}
 
     @UseGuards(JwtAuthGuard)
-    @Get('getInventoryById')
+    @Get('/getInventoryById')
     async findById(@Query('id') inventoryId:string): Promise<Inventory | any>{
         return await this.inventoryService.findInventoryById(inventoryId);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('getInventoryByUserId')
+    @Get('/getInventoryByUserId')
     async findByUserId(@Query('id') uid:string): Promise<Inventory[] | any>{
         return await this.inventoryService.findInventoryByUserId(uid);
     }
@@ -85,20 +85,9 @@ export class InventoryController {
         return await this.inventoryService.searchByCategory(req.user.uid, category);
     }
 
-
     @Post()
     @UseGuards(JwtAuthGuard)
     async createnew(@Req() req:Request, @Body() body:Inventory) {
-        // const data = JSON.parse(body);
         return await this.inventoryService.newInv(req.user, body);
-        // const result = await this.imageService.newInvPic(newInv._id, filesBuffer);
-        // return result;
     }
-
-    // @Post()
-    // @UseGuards(JwtAuthGuard)
-    // async createnew(@Body() data: Inventory, @Req() req: Request){
-    //     const result = await this.inventoryService.newInv(req.user, data);
-    //     return result;
-    // }
 }
