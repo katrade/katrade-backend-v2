@@ -90,4 +90,10 @@ export class InventoryController {
     async createnew(@Req() req:Request, @Body() body:Inventory) {
         return await this.inventoryService.newInv(req.user, body);
     }
+
+    @Get('/getSelectItem')
+    @UseGuards(JwtAuthGuard)
+    async getSelectItem(@Req() req) {
+        return await this.inventoryService.getSelectItem(req.user.uid);
+    }
 }

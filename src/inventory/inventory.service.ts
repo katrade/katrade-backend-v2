@@ -48,12 +48,17 @@ export class InventoryService {
         return allUserInventory;
     }
 
+    async getSelectItem(uid: string){
+        const userInventory = await this.inventoryModel.find({owner: uid, lock: 0});
+        return userInventory;
+    }
+
     async getMatchInventory(uid:string, inventoryId:string){
         const inventory = await this.inventoryModel.findOne({_id: inventoryId});
         if(!inventory){
             return {message: "Can't find inventory"};
         }
-        const userInventory = await this.inventoryModel.find({owner: uid});
+        const userInventory = await this.inventoryModel.find({owner: uid, lock: 0});
         let result: Inventory[] = [];
         for(let i = 0; i < userInventory.length; i++){
             for(let j = 0; j < inventory.require.length; j++){

@@ -13,7 +13,7 @@ export class ChatroomService {
     ){}
 
     async getroom(roomid: string){
-        let chatroom = await this.chatroomModel.findOne({roomId: roomid}); 
+        let chatroom = await this.chatroomModel.findOne({roomId: roomid});
         return chatroom;
     }
 
