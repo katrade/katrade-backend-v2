@@ -39,8 +39,8 @@ export class InventoryService {
 
     async getAll(){
         const inventory: Inventory[] = await this.inventoryModel.find({lock: 0});
-        return inventory;
-        // return await this.imageService.changeInventoryOneImageArrayToBase64(inventory);
+        const res = inventory.sort((a, b) => b.favourite.length - a.favourite.length);
+        return res;
     }
 
     async getUserInventory(userId: string){
