@@ -176,7 +176,7 @@ export class UserService {
         const fg = await this.followModel.find({from: uid});
         let follower: string[] = [];
         let following: string[] = [];
-        const n: number = fr > fg ? fr.length: fg.length;
+        const n: number = fr.length > fg.length ? fr.length: fg.length;
         for(let i = 0; i < n; i++) {
             if(i < fr.length){
                 follower.push(fr[i].from)
