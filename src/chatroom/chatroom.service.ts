@@ -3,9 +3,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Chatroom, Message, MessageForData } from "src/models/chatroom.model";
 
-
-
-
 @Injectable() 
 export class ChatroomService {
     constructor(
@@ -31,7 +28,6 @@ export class ChatroomService {
     }
 
     async addMessage(body: MessageForData){
-        // let Room = await this.chatroomModel.findOne({roomId: body.roomId});
         console.log(body)
         let message : Message = {sender: body.sender, content_type: body.content_type, content: body.content, timeStamp: body.timeStamp}
         let checkroom = await this.chatroomModel.findOne({roomId: body.roomId});
@@ -47,7 +43,6 @@ export class ChatroomService {
         if (!chatroom)
             return [];
         let idx = chatroom.messages.length;
-        //console.log(chatroom);
         if (idx == 0) {
             return [];
         }

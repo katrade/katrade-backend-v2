@@ -6,7 +6,6 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { GoogleStrategy } from './strategies/google.strategy';
 import { refreshTokenSchema } from '../models/refresh-token.model';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RefreshTokenService } from './refreshToken.service';
@@ -28,6 +27,6 @@ require('dotenv').config();
     ImageModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, RefreshTokenService, VerifyEmailStrategy, MailService, ResetPasswordStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, RefreshTokenService, VerifyEmailStrategy, MailService, ResetPasswordStrategy],
 })
 export class AuthModule {}

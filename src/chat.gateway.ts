@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { ConnectedSocket, MessageBody,OnGatewayConnection,OnGatewayDisconnect,SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { OnGatewayConnection,OnGatewayDisconnect,SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Socket } from "socket.io";
 import { ChatroomService } from "./chatroom/chatroom.service";
 import { MessageForData } from "src/models/chatroom.model";
@@ -29,12 +29,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
             }
             await this.chatroomService.addMessage(body);
         }
-    
-    // @SubscribeMessage('read_success')
-    //     handleRead(client: Socket,message: { room: string, message: string}):void{
-    //         this.server.in(message.room).emit('read_success', message.message);
-    //     }
-
 
     @SubscribeMessage('joinroom')
         async JoinRoom(client: Socket, room: string){
@@ -43,13 +37,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
             await this.chatroomService.newroom(room);
             //this.server.emit('joinroom', room);
         }
-    
-    // @SubscribeMessage('leaveroom')
-    //     handleLeaveRoom(client: Socket, @MessageBody() room: string):void{
-    //         client.leave(room)
-    //         console.log('LEAVEROOM :' + room)
-    //         //this.server.emit('leaveroom', room);
-    //     }
+
     
     handleConnection() {
         console.log('client connect');

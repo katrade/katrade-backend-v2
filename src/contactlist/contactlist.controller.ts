@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
-import { Contactlist, Contactuser } from "src/models/contactlist.model";
+import { Contactuser } from "src/models/contactlist.model";
 import { ContactlistService } from "./contactlist.service";
 
 

@@ -1,4 +1,4 @@
-import { Controller, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { contactlistSchema } from "src/models/contactlist.model";
 import { ContactlistController } from "./contactlist.controller";

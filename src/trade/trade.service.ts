@@ -203,18 +203,6 @@ export class TradeService {
         for(let i = 0; i < requestArray.length; i++){
             let sourceInventory: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].sourceInventoryId});
             let targetInventory: Inventory = await this.inventoryModel.findOne({_id: requestArray[i].targetInventoryId});
-            // if(requestArray[i].targetUserConfirm === 1 && requestArray[i].sourceUserConfirm === 1 && requestArray[i].state === 1){
-            //     await this.requestModel.updateOne({_id: requestArray[i]._id}, {$set: {state: 2}});
-            //     await this.lockInventory(requestArray[i].sourceInventoryId);
-            //     await this.lockInventory(requestArray[i].targetInventoryId);
-            //     const requests = await this.findRequestByInventory2Id(requestArray[i].sourceInventoryId, requestArray[i].targetInventoryId);
-            //     for(let j = 0; j < requests.length; j++) {
-            //         if(requests[j].sourceInventoryId === requestArray[i].sourceInventoryId && requests[j].targetInventoryId === requestArray[i].targetInventoryId){
-            //             continue;
-            //         }
-            //         await this.cancelRequest(requests[i]._id);
-            //     }
-            // }
             if(!sourceInventory || !targetInventory){
                 continue;
             }

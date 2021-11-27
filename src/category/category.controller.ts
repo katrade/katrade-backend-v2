@@ -16,7 +16,7 @@ export class CategoryController {
 
 
     @Get('/search')
-    async sayHi(@Query('pattern') pattern:string){
+    async serch(@Query('pattern') pattern:string){
         let all = await this.categoryService.getAll(); 
         let s:subCat[] = await this.categoryService.createAllAray(all);
         return await this.categoryService.searchCat(s, pattern);

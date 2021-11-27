@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Console } from "console";
 import { Model } from "mongoose";
 import { Contactlist, Contactuser } from "src/models/contactlist.model";
 

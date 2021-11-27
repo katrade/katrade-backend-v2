@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
-import { Chatroom, Message, MessageForData } from "src/models/chatroom.model";
+import { MessageForData } from "src/models/chatroom.model";
 import { ChatroomService } from "./chatroom.service";
 
 

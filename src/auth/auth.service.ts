@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { Image } from 'src/models/image.model';
 import { compare } from 'bcrypt';
-import { ImageService } from 'src/image/image.service';
 import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
@@ -13,16 +11,6 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly mailService: MailService
     ){}
-
-    async googleLG(req: any){
-        if (!req.user) {
-            return 'No user from google'
-        }
-        return {
-            message: 'User information from google',
-            user: req.user
-        }
-    }
 
     async validateUser(email: string, pass: string):Promise<any>{
         const user = await this.userService.findForSignin(email);

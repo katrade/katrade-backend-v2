@@ -33,23 +33,11 @@ export class AuthController {
         return this.authService.sendResetPasswordEmail(email);
     }
 
-    @Get('/google')
-    @UseGuards(AuthGuard('google'))
-    async googleAuth(@Req() req:Request) {}
-    
-    @Get('/loginGoogle')
-    @UseGuards(AuthGuard('google'))
-    async googleLogin(@Req() req:Request){
-        return this.authService.googleLG(req);
-    }
-
     @UseGuards(LocalAuthGuard)
     @Post('/signin')
     async login(@Req() req:Request, @Res() res:Response){
         let tmp = await this.authService.login(req.user);
         res.json({DaveTheHornyDuck: tmp.accessToken, verifyEmail: tmp.verifyEmail, setUsername: tmp.setUsername});
-        // res.cookie(process.env.SCK, tmp.accessToken, {httpOnly: true});
-        // return {value: tmp.verifyEmail, DaveTheHornyDuck: tmp.accessToken};
     }
 
     @UseGuards(JwtAuthGuard)
