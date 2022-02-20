@@ -36,7 +36,6 @@ export class InventoryController {
         return await this.inventoryService.deleteInventoryById(uid, id);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/getAllInventory')
     async getAll(){
         return await this.inventoryService.getAll();
