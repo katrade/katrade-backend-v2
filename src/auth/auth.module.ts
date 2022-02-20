@@ -10,7 +10,6 @@ import { refreshTokenSchema } from '../models/refresh-token.model';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RefreshTokenService } from './refreshToken.service';
 import { VerifyEmailStrategy } from './strategies/verifyEmail.straregy';
-import { ImageModule } from 'src/image/image.module';
 import { MailService } from 'src/mail/mail.service';
 import { ResetPasswordStrategy } from './strategies/resetPassword.strategy';
 require('dotenv').config();
@@ -24,7 +23,6 @@ require('dotenv').config();
       secret: process.env.secretKey,
       signOptions: { expiresIn: process.env.expries },
     }),
-    ImageModule
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, RefreshTokenService, VerifyEmailStrategy, MailService, ResetPasswordStrategy],
