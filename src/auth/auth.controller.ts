@@ -22,6 +22,11 @@ export class AuthController {
         return this.userService.craete_new_user(data);
     }
 
+    @Post('/validateNontsriAccount')
+    async validateNontsriAccount(@Body() {username, password}: {username: string; password: string}) {
+        return this.authService.validateNontsriAccount(username, password)
+    }
+
     @Patch('/resetPassword')
     @UseGuards(ResetPasswordGuard)
     async resetPassword(@Req() req, @Body('password') password: string){

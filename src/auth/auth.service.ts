@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
 import { MailService } from 'src/mail/mail.service';
+import axios from 'axios';
 
 @Injectable()
 export class AuthService {
@@ -45,5 +46,15 @@ export class AuthService {
     async login(user: any){
         const payload = {username: user.username, sub:user._id};
         return { accessToken: await this.jwtService.signAsync(payload), verifyEmail: user.verifyEmail === 1 ? true: false, setUsername: user.username === "" ? false: true };
+    }
+
+    async validateNontsriAccount(username: string, password: string) {
+        const kuApiResponse = await axios.post('https://myapi.ku.th/auth/login', {
+            username: username,
+            password: password,
+        },{
+            headers: { 'app-key': process.env.appKey}
+        })
+        return kuApiResponse.data.user
     }
 }
