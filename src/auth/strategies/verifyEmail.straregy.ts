@@ -4,8 +4,11 @@ import { Injectable } from '@nestjs/common';
 require('dotenv').config();
 
 @Injectable()
-export class VerifyEmailStrategy extends PassportStrategy(Strategy, "verifyEmailToken") {
-  constructor(){
+export class VerifyEmailStrategy extends PassportStrategy(
+  Strategy,
+  'verifyEmailToken',
+) {
+  constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -13,7 +16,7 @@ export class VerifyEmailStrategy extends PassportStrategy(Strategy, "verifyEmail
     });
   }
 
-  async validate(payload: { sub: string }): Promise<any>{
-    return {uid: payload.sub }
+  async validate(payload: { sub: string }): Promise<any> {
+    return { uid: payload.sub };
   }
 }

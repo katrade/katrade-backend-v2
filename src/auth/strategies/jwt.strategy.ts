@@ -6,8 +6,8 @@ import { Request } from 'express';
 require('dotenv').config();
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, "accessToken") {
-  constructor(private readonly userService: UserService){
+export class JwtStrategy extends PassportStrategy(Strategy, 'accessToken') {
+  constructor(private readonly userService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       // jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "accessToken") {
     });
   }
 
-  async validate(payload: {username: string, sub: string}): Promise<any>{
-    return {uid: payload.sub, username: payload.username}
+  async validate(payload: { username: string; sub: string }): Promise<any> {
+    return { uid: payload.sub, username: payload.username };
   }
 }

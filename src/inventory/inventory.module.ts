@@ -7,14 +7,14 @@ import { userSchema } from '../models/user.model';
 import { TradeModule } from 'src/trade/trade.module';
 
 @Module({
-    imports: [
-        MongooseModule.forFeature([
-            {name: "Inventory", schema: inventorySchema}, 
-            {name: "User", schema: userSchema},
-        ]),
-        TradeModule,
-    ],
-    controllers: [InventoryController],
-    providers: [InventoryService]
+  imports: [
+    MongooseModule.forFeature([
+      { name: 'Inventory', schema: inventorySchema },
+      { name: 'User', schema: userSchema },
+    ]),
+    TradeModule,
+  ],
+  controllers: [InventoryController],
+  providers: [InventoryService],
 })
 export class InventoryModule {}

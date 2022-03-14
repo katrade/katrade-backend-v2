@@ -16,17 +16,21 @@ require('dotenv').config();
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{name: 'User', schema: userSchema}, {name: "Inventory", schema: inventorySchema}, {name: 'Follow', schema: FollowSchema}]),
+    MongooseModule.forFeature([
+      { name: 'User', schema: userSchema },
+      { name: 'Inventory', schema: inventorySchema },
+      { name: 'Follow', schema: FollowSchema },
+    ]),
     JwtModule.register({
       secret: process.env.secrectVerifyEmailKey,
       signOptions: { expiresIn: process.env.expiresEmailKey },
     }),
-    PassportModule.register({defaultStrategy: 'verifyEmailToken'}),
+    PassportModule.register({ defaultStrategy: 'verifyEmailToken' }),
     TradeModule,
     InventoryModule,
   ],
   controllers: [UserController],
   providers: [UserService, MailService, VerifyEmailStrategy, InventoryService],
-  exports: [UserService]
+  exports: [UserService],
 })
 export class UserModule {}

@@ -4,8 +4,11 @@ import { Injectable } from '@nestjs/common';
 require('dotenv').config();
 
 @Injectable()
-export class ResetPasswordStrategy extends PassportStrategy(Strategy, "resetPassword") {
-  constructor(){
+export class ResetPasswordStrategy extends PassportStrategy(
+  Strategy,
+  'resetPassword',
+) {
+  constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -13,7 +16,7 @@ export class ResetPasswordStrategy extends PassportStrategy(Strategy, "resetPass
     });
   }
 
-  async validate(payload: { resetPasswordEmail: string }): Promise<any>{
-    return {resetPasswordEmail: payload.resetPasswordEmail }
+  async validate(payload: { resetPasswordEmail: string }): Promise<any> {
+    return { resetPasswordEmail: payload.resetPasswordEmail };
   }
 }

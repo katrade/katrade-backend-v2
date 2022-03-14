@@ -4,33 +4,33 @@ import { Document } from 'mongoose';
 export type HistoryDocument = History & Document;
 
 @Schema()
-export class History{
-    @Prop()
-    sourceUserId: string
+export class History {
+  @Prop()
+  sourceUserId: string;
 
-    @Prop()
-    targetUserId: string
+  @Prop()
+  targetUserId: string;
 
-    @Prop()
-    sourceUsername: string
+  @Prop()
+  sourceUsername: string;
 
-    @Prop()
-    targetUsername: string
+  @Prop()
+  targetUsername: string;
 
-    @Prop()
-    sourceInventoryName: string
+  @Prop()
+  sourceInventoryName: string;
 
-    @Prop()
-    targetInventoryName: string
+  @Prop()
+  targetInventoryName: string;
 
-    @Prop()
-    sourceInventoryPicture: string
+  @Prop()
+  sourceInventoryPicture: string;
 
-    @Prop()
-    targetInventoryPicture: string
+  @Prop()
+  targetInventoryPicture: string;
 
-    @Prop()
-    timeStamp: Date;
+  @Prop()
+  timeStamp: Date;
 }
 
 export const HistorySchema = SchemaFactory.createForClass(History);

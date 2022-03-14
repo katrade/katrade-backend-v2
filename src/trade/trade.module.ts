@@ -9,13 +9,13 @@ import { HistorySchema } from 'src/models/histrory.model';
 @Module({
   imports: [
     MongooseModule.forFeature([
-      {name: 'History', schema: HistorySchema},
-      {name: 'Request', schema: RequestSchema},
-      {name: 'User', schema: userSchema},
-      {name: 'Inventory', schema: inventorySchema}
-    ])
+      { name: 'History', schema: HistorySchema },
+      { name: 'Request', schema: RequestSchema },
+      { name: 'User', schema: userSchema },
+      { name: 'Inventory', schema: inventorySchema },
+    ]),
   ],
   providers: [TradeService],
-  exports: [TradeService]
+  exports: [TradeService],
 })
 export class TradeModule {}

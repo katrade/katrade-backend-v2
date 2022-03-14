@@ -16,15 +16,25 @@ require('dotenv').config();
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{name: "RefreshToken", schema: refreshTokenSchema}]),
+    MongooseModule.forFeature([
+      { name: 'RefreshToken', schema: refreshTokenSchema },
+    ]),
     UserModule,
-    PassportModule.register({defaultStrategy: 'accessToken'}),
+    PassportModule.register({ defaultStrategy: 'accessToken' }),
     JwtModule.register({
       secret: process.env.secretKey,
       signOptions: { expiresIn: process.env.expries },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, RefreshTokenService, VerifyEmailStrategy, MailService, ResetPasswordStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    RefreshTokenService,
+    VerifyEmailStrategy,
+    MailService,
+    ResetPasswordStrategy,
+  ],
 })
 export class AuthModule {}
