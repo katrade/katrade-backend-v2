@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../models/user.model';
+import { Student, User } from '../models/user.model';
 import { Inventory } from 'src/models/inventory.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -84,7 +84,50 @@ export class UserService {
     });
   }
 
-  async craete_new_user(data: User) {
+  async createStudent(username: string, password: string, student: Student) {
+    const findUser = await this.userModel.findOne({
+      isStudent: true,
+      studentId: student.stdCode,
+    });
+
+    if (findUser) return { msg: 'Student existed', success: false };
+
+    let hashPassword: string = await bcrypt.hash(
+      password,
+      parseInt(process.env.salt),
+    );
+    const newStudent = new this.userModel({
+      firstname: student.firstNameEn,
+      lastname: student.lastNameEn,
+      username: '',
+      password: hashPassword,
+      address: '',
+      email: '',
+      phoneNumber: '',
+      profilePic: '',
+      verifyEmail: 1,
+      favourite: [],
+      inventories: [],
+      requestInbox: [],
+      userContacts: [],
+      isStudent: true,
+      student: student,
+      studentId: student.stdCode
+    });
+    // push in to db and sign jwt
+    let user = await this.userModel.create(newStudent);
+    // console.log(user);
+    let payload: any = {
+      sub: user._id,
+    };
+    let token: string = this.jwtService.sign(payload);
+    return {
+      success: true,
+      token: token,
+    };
+  }
+
+  async craete_new_user(data: User, student?: Student) {
     let hashPassword: string = await bcrypt.hash(
       data.password,
       parseInt(process.env.salt),
@@ -104,6 +147,9 @@ export class UserService {
       inventories: [],
       requestInbox: [],
       userContacts: [],
+      isStudent: false,
+      student: {},
+      studentId: ""
     });
     let m: any = '';
     let checkEmail: User = await this.userModel.findOne({ email: data.email });

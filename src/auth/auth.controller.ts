@@ -44,7 +44,7 @@ export class AuthController {
   async signupNontsri(
     @Body() { username, password }: { username: string; password: string },
   ) {
-    return;
+    return this.authService.signupWithNontsriAccount(username, password);
   }
 
   @Patch('/resetPassword')
@@ -70,6 +70,12 @@ export class AuthController {
       verifyEmail: tmp.verifyEmail,
       setUsername: tmp.setUsername,
     });
+  }
+  @Post("/signinWithNontsri")
+  async loginWithNontsriAccount(
+    @Body() { username, password }: { username: string; password: string },
+  ) {
+    return this.authService.loginWithNontsriAccount(username, password);
   }
 
   @UseGuards(JwtAuthGuard)

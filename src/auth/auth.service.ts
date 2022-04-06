@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
 import { MailService } from 'src/mail/mail.service';
 import axios from 'axios';
+import { Student, User } from 'src/models/user.model';
 
 @Injectable()
 export class AuthService {
@@ -69,8 +70,48 @@ export class AuthService {
   }
 
   async signupWithNontsriAccount(username: string, password: string) {
-    const user: any = await this.validateNontsriAccount(username, password)
-      .then((user) => user)
+    const std: Student = await this.validateNontsriAccount(username, password)
+      .then((std) => std.student)
       .catch(() => undefined);
+    return await this.userService.createStudent(username, password, std);
+  }
+
+  async loginWithNontsriAccount(username: string, password: string) {
+    if (!username || !password)
+      return { msg: 'field is empty', success: false };
+    const std: Student = await this.validateNontsriAccount(username, password)
+      .then((std) => std.student)
+      .catch(() => undefined);
+    if (!std) {
+      return {
+        success: false,
+        msg: "Cannot authenticated with my.ku.th"
+      }
+    }
+    const findStudent = await this.userService.findAny({
+      isStudent: true,
+      studentId: std.stdCode,
+    });
+    if (!findStudent) {
+      const { success, token } = await this.signupWithNontsriAccount(
+        username,
+        password,
+      );
+      return {
+        success: success,
+        DaveTheHornyDuck: token,
+        verifyEmail: true,
+        setUsername: false,
+      };
+    }
+    return {
+      success: true,
+      DaveTheHornyDuck: await this.jwtService.signAsync({
+        sub: findStudent._id,
+      }),
+      verifyEmail: findStudent.verifyEmail === 1 ? true : false,
+      setUsername: findStudent.username === '' ? false : true,
+    };
+
   }
 }

@@ -20,6 +20,8 @@ export const userSchema = new mongoose.Schema({
       userNameContact: String,
     },
   ],
+  isStudent: Boolean,
+  studentId: String,
   student: {
     loginName: String,
     stdCode: String, // stdId
@@ -65,7 +67,7 @@ export interface userContactdata {
   userNameContact: string;
 }
 
-interface Student {
+export interface Student {
   loginName: string;
   stdCode: string; // stdId
   titleTh: string;
@@ -123,6 +125,7 @@ interface v1 {
 interface v2 {
   isStudent: boolean;
   student: Student;
+  studentId: string
 }
 
 export interface User extends v1, v2 {}
